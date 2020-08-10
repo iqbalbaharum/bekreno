@@ -5,7 +5,7 @@ import {authenticator} from 'otplib';
 export class OtpService {
   constructor(/* Add @inject to inject parameters */) {}
 
-  secret = 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD';
+  private secret: string = process.env.OTP_SECRET ?? '';
 
   getOTPCode(): string {
     return authenticator.generate(this.secret);

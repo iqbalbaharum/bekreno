@@ -56,17 +56,9 @@ export class UserController {
     credentials: Credentials,
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<User> {
-    let userExisted;
-
-    try {
-      userExisted = await this.credentialRepository.findById(
-        credentials.mobile,
-      );
-    } catch (err) {
-      if (err.code !== 'ENTITY_NOT_FOUND') {
-        throw err;
-      }
-    }
+    const userExisted = await this.userRepository.findOne({
+      where: {mobile: credentials.mobile},
+    });
 
     if (!userExisted) {
       const userCreated = await this.userRepository.create({

@@ -76,9 +76,12 @@ export class UserController {
       });
 
       // send SMS
+      const validity: string = process.env.OTP_VALIDITY ?? '0';
       await this.smsTacService.sendSms(
         credentials.mobile,
-        `Your verification token is ${token}. Only valid for 3 minute.`,
+        `Your verification token is ${token}. Only valid for ${
+          parseInt(validity) / 60000
+        } minute.`,
         `${token}`,
       );
 

@@ -14,7 +14,8 @@ export class OtpService {
   verifyOTP(token: string, date: Date): boolean {
     const time = new Date().getTime() - date.getTime();
 
-    if (time > 180000) {
+    const validity: string = process.env.OTP_VALIDITY ?? '0';
+    if (time > parseInt(validity)) {
       return false;
     }
 

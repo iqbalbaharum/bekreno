@@ -1,16 +1,9 @@
 export const CredentialSchema = {
   type: 'object',
-  required: ['name', 'mobile', 'email', 'password'],
+  required: ['mobile', 'password'],
   properties: {
-    name: {
-      type: 'string',
-    },
     mobile: {
       type: 'string',
-    },
-    email: {
-      type: 'string',
-      format: 'email',
     },
     password: {
       type: 'string',

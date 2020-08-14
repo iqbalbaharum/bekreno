@@ -249,11 +249,11 @@ export class UserController {
       },
     })
     credential: Credentials,
-  ): Promise<string> {
+  ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
     const userProfile = this.userService.convertToUserProfile(user);
     const token = await this.jwtService.generateToken(userProfile);
 
-    return token;
+    return {token: token};
   }
 }

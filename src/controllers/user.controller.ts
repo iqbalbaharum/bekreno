@@ -1,5 +1,10 @@
-import {TokenService, UserService} from '@loopback/authentication';
-import {inject} from '@loopback/core';
+import {
+  authenticate,
+  AuthenticationBindings,
+  TokenService,
+  UserService,
+} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -21,6 +26,7 @@ import {
   Response,
   RestBindings,
 } from '@loopback/rest';
+import {UserProfile} from '@loopback/security';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
@@ -32,6 +38,7 @@ import {CredentialRepository, UserRepository} from '../repositories';
 import {CredentialSchema, SignUpSchema} from '../schema';
 import {OtpService, SmsTac, XmlToJsonService} from '../services';
 import {Credentials} from '../types/credential.types';
+import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
 
 export class UserController {
   constructor(
@@ -49,6 +56,8 @@ export class UserController {
     public userService: UserService<User, Credentials>,
     @inject(PasswordHasherBindings.PASSWORD_HASHER)
     public passwordHasher: PasswordHasher,
+    @inject.getter(AuthenticationBindings.CURRENT_USER)
+    public getCurrentUser: Getter<UserProfile>,
   ) {}
 
   @post('/user', {
@@ -255,5 +264,23 @@ export class UserController {
     const token = await this.jwtService.generateToken(userProfile);
 
     return {token: token};
+  }
+
+  @get('/me', {
+    security: OPERATION_SECURITY_SPEC,
+    responses: {
+      '200': {
+        description: 'User model instance',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(User, {includeRelations: true}),
+          },
+        },
+      },
+    },
+  })
+  @authenticate('jwt')
+  async whoAmI(): Promise<UserProfile> {
+    return this.getCurrentUser();
   }
 }

@@ -40,7 +40,9 @@ export class JWTService implements TokenService {
         {
           [securityId]: decodedToken.id,
           name: decodedToken.name,
-          id: decodedToken.id,
+          id: decodedToken.uuid,
+          email: decodedToken.email,
+          mobile: decodedToken.mobile,
         },
       );
     } catch (error) {
@@ -59,6 +61,7 @@ export class JWTService implements TokenService {
     }
     const userInfoForToken = {
       id: userProfile[securityId],
+      mobile: userProfile.mobile,
       name: userProfile.name,
       email: userProfile.email,
     };

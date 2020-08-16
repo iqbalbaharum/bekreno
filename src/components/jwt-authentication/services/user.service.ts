@@ -6,10 +6,11 @@
 import {UserService} from '@loopback/authentication';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
-import {securityId, UserProfile} from '@loopback/security';
+import {securityId} from '@loopback/security';
 import {compare} from 'bcryptjs';
 import {User} from '../../../models/user.model';
 import {UserRepository} from '../../../repositories/user.repository';
+import {MyUserProfile} from '../types';
 import {Credentials} from './../../../types/credential.types';
 
 export class MyUserService implements UserService<User, Credentials> {
@@ -48,13 +49,14 @@ export class MyUserService implements UserService<User, Credentials> {
     return foundUser;
   }
 
-  convertToUserProfile(user: User): UserProfile {
+  convertToUserProfile(user: User): MyUserProfile {
     return {
       [securityId]: user.uuid!,
       name: user.name,
-      id: user.uuid,
+      user: user.uuid!,
       email: user.email,
       mobile: user.mobile,
+      roles: [],
     };
   }
 }

@@ -1,7 +1,6 @@
 import {
   authenticate,
   AuthenticationBindings,
-  TokenService,
   UserService,
 } from '@loopback/authentication';
 import {Getter, inject} from '@loopback/core';
@@ -32,11 +31,15 @@ import {
   TokenServiceBindings,
   UserServiceBindings,
 } from '../components/jwt-authentication/keys';
+import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
+import {MyUserProfile} from '../components/jwt-authentication/types';
 import {User} from '../models';
 import {CredentialRepository, UserRepository} from '../repositories';
-import {CredentialSchema, SignUpSchema} from '../schema';
+import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
+import {ForgetPasswordSchema} from '../schema/forget-password.schema';
 import {OtpService, SmsTac, XmlToJsonService} from '../services';
+import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
 
@@ -49,9 +52,9 @@ export class UserController {
     @inject('services.SmsTac') protected smsTacService: SmsTac,
     @inject('services.XmlToJsonService')
     protected xmlToJsonService: XmlToJsonService,
-    @inject('services.OtpService') protected otp: OtpService,
+    @inject('services.OtpService') protected otpService: OtpService,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
-    public jwtService: TokenService,
+    public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
     public userService: UserService<User, Credentials>,
     @inject(PasswordHasherBindings.PASSWORD_HASHER)
@@ -89,13 +92,7 @@ export class UserController {
         name: credential.name,
       });
 
-      const token = this.otp.getOTPCode();
-
-      await this.credentialRepository.create({
-        password: await this.passwordHasher.hashPassword(credential.password),
-        token: token,
-        userId: userCreated.uuid,
-      });
+      const token = this.otpService.getOTPCode();
 
       // send SMS
       const validity: string = process.env.OTP_VALIDITY ?? '0';
@@ -106,6 +103,11 @@ export class UserController {
         } minute.`,
         `${token}`,
       );
+
+      await this.credentialRepository.create({
+        password: await this.passwordHasher.hashPassword(credential.password),
+        userId: userCreated.uuid,
+      });
 
       return userCreated;
     } else {
@@ -260,7 +262,9 @@ export class UserController {
     credential: Credentials,
   ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
-    const userProfile = this.userService.convertToUserProfile(user);
+    const userProfile = this.userService.convertToUserProfile(
+      user,
+    ) as MyUserProfile;
     const token = await this.jwtService.generateToken(userProfile);
 
     return {token: token};
@@ -282,5 +286,122 @@ export class UserController {
   @authenticate('jwt')
   async whoAmI(): Promise<UserProfile> {
     return this.getCurrentUser();
+  }
+
+  @post('/user/verify', {
+    responses: {
+      '200': {
+        description: 'User model instance',
+      },
+    },
+  })
+  @authenticate('jwt')
+  async verifyOTPToken(
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {schema: OTPCredentialSchema},
+      },
+    })
+    otpCredential: OTPCredential,
+  ): Promise<User> {
+    let bRetCode = false;
+
+    const user = await this.getCurrentUser();
+    const userCred = await this.userRepository.findCredentials(user.user);
+
+    if (userCred?.tokenCreatedAt) {
+      bRetCode = this.otpService.verifyOTP(
+        otpCredential.otp,
+        userCred.tokenCreatedAt,
+      );
+    }
+
+    if (!bRetCode) {
+      throw new HttpErrors.BadRequest('Invalid credentials');
+    }
+
+    return this.userRepository.findById(user.user);
+  }
+
+  // @post('/user/otp/refresh', {
+  //   responses: {
+  //     '200': {
+  //       description: 'User model instance',
+  //     },
+  //   },
+  // })
+  // @authenticate('jwt')
+  // async refreshOtp(): Promise<{refresh: Boolean}> {
+  //   const bRetCode = true;
+
+  //   const token = this.otpService.getOTPCode();
+
+  //   await this.credentialRepository.updateById(user.user, {
+  //     password: await this.passwordHasher.hashPassword(credential.password),
+  //     token: token,
+  //     userId: userCreated.uuid,
+  //   });
+
+  //   return {refresh: bRetCode};
+  // }
+
+  @get('/user/forget/{mobile}', {
+    responses: {
+      '200': {
+        description: 'Forget password',
+      },
+    },
+  })
+  async forgetPassword(
+    @param.path.string('mobile') mobile: string,
+  ): Promise<{result: Boolean; token: string}> {
+    let bRetCode = false;
+    const userExisted = await this.userRepository.findOne({
+      where: {mobile: mobile},
+    });
+
+    if (!userExisted) {
+      throw new HttpErrors.Unauthorized('No valid users');
+    } else {
+      bRetCode = true;
+    }
+
+    const token = await this.jwtService.generateResetPasswordToken(userExisted);
+
+    return {result: bRetCode, token: token};
+  }
+
+  @post('/user/forget', {
+    responses: {
+      '200': {
+        description: 'Forget password',
+      },
+    },
+  })
+  async setNewPassword(
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {schema: ForgetPasswordSchema},
+      },
+    })
+    forget: ForgetPassword,
+  ): Promise<{result: Boolean}> {
+    const userId = await this.jwtService.decodeResetPasswordToken(forget.token);
+    const credential = await this.userRepository.findCredentials(userId);
+
+    if (!credential) {
+      throw new HttpErrors.Unauthorized('Invalid forget password token');
+    } else {
+      credential.password = await this.passwordHasher.hashPassword(
+        forget.password,
+      );
+      credential.resetToken = '';
+
+      await this.credentialRepository.update(credential);
+    }
+
+    return {result: true};
   }
 }

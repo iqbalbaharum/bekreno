@@ -1,9 +1,9 @@
-import {bind, /* inject, */ BindingScope} from '@loopback/core';
+import {bind, BindingScope} from '@loopback/core';
 import {authenticator} from 'otplib';
 
 @bind({scope: BindingScope.TRANSIENT})
 export class OtpService {
-  constructor(/* Add @inject to inject parameters */) {}
+  constructor() {}
 
   private secret: string = process.env.OTP_SECRET ?? '';
 
@@ -11,11 +11,11 @@ export class OtpService {
     return authenticator.generate(this.secret);
   }
 
-  verifyOTP(token: string, date: Date): boolean {
-    const time = new Date().getTime() - date.getTime();
+  verifyOTP(token: string, createdAt: Date): boolean {
+    const time = new Date().getTime() - createdAt.getTime();
+    const validity = parseInt(process.env.OTP_VALIDITY ?? '0');
 
-    const validity: string = process.env.OTP_VALIDITY ?? '0';
-    if (time > parseInt(validity)) {
+    if (time > validity) {
       return false;
     }
 

@@ -6,9 +6,11 @@
 import {TokenService} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {HttpErrors} from '@loopback/rest';
-import {securityId, UserProfile} from '@loopback/security';
+import {securityId} from '@loopback/security';
 import {promisify} from 'util';
+import {User} from '../../../models';
 import {TokenServiceBindings} from '../keys';
+import {MyUserProfile} from '../types';
 
 const jwt = require('jsonwebtoken');
 const signAsync = promisify(jwt.sign);
@@ -22,14 +24,14 @@ export class JWTService implements TokenService {
     private jwtExpiresIn: string,
   ) {}
 
-  async verifyToken(token: string): Promise<UserProfile> {
+  async verifyToken(token: string): Promise<MyUserProfile> {
     if (!token) {
       throw new HttpErrors.Unauthorized(
         `Error verifying token : 'token' is null`,
       );
     }
 
-    let userProfile: UserProfile;
+    let userProfile: MyUserProfile;
 
     try {
       // decode user profile from token
@@ -43,6 +45,8 @@ export class JWTService implements TokenService {
           id: decodedToken.uuid,
           email: decodedToken.email,
           mobile: decodedToken.mobile,
+          user: decodedToken.user,
+          roles: [],
         },
       );
     } catch (error) {
@@ -50,21 +54,26 @@ export class JWTService implements TokenService {
         `Error verifying token : ${error.message}`,
       );
     }
+
     return userProfile;
   }
 
-  async generateToken(userProfile: UserProfile): Promise<string> {
+  async generateToken(userProfile: MyUserProfile): Promise<string> {
     if (!userProfile) {
       throw new HttpErrors.Unauthorized(
         'Error generating token : userProfile is null',
       );
     }
+
     const userInfoForToken = {
       id: userProfile[securityId],
       mobile: userProfile.mobile,
       name: userProfile.name,
       email: userProfile.email,
+      user: userProfile.user,
+      roles: [],
     };
+
     // Generate a JSON Web Token
     let token: string;
     try {
@@ -76,5 +85,48 @@ export class JWTService implements TokenService {
     }
 
     return token;
+  }
+
+  async generateResetPasswordToken(user: User): Promise<string> {
+    if (!user) {
+      throw new HttpErrors.NotFound(
+        'Error generating token : user is not found',
+      );
+    }
+
+    const userInfoForToken = {
+      id: user.uuid,
+      user: user.uuid,
+    };
+
+    let token: string;
+    try {
+      token = await signAsync(userInfoForToken, this.jwtSecret, {
+        expiresIn: 60000 * 60,
+      });
+    } catch (error) {
+      throw new HttpErrors.Unauthorized(`Error encoding token : ${error}`);
+    }
+
+    return token;
+  }
+
+  async decodeResetPasswordToken(token: string): Promise<string> {
+    let userId = '';
+
+    try {
+      const decodedToken = await verifyAsync(token, this.jwtSecret);
+      userId = decodedToken.user;
+    } catch (error) {
+      throw new HttpErrors.Unauthorized(
+        `Error verifying token : ${error.message}`,
+      );
+    }
+
+    if (!userId) {
+      throw new HttpErrors.Unauthorized(`Invalid reset token`);
+    }
+
+    return userId;
   }
 }

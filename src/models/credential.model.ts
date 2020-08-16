@@ -22,14 +22,9 @@ export class Credential extends Entity {
   password: string;
 
   @property({
-    type: 'boolean',
-  })
-  isTemporaryPassword: boolean;
-
-  @property({
     type: 'string',
   })
-  token?: string;
+  resetToken: string;
 
   @property({
     type: 'date',

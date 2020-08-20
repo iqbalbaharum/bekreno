@@ -14,12 +14,12 @@ const config = {
     {
       template: {
         method: 'GET',
-        url: process.env.SMS_URL ?? 'https://www.klasiksms.com/api/sendsms.php',
+        url: process.env.SMS_URL,
         query: {
           email: '',
-          key: process.env.SMS_API ?? 'c8892bacb6e130068d4e8c1150f1f857',
+          key: process.env.SMS_API,
           recipient: '{mobile}',
-          message: process.env.SMS_TAG ?? 'ACCEPTBY' + ' {message}',
+          message: process.env.SMS_TAG + ' {message}',
           referenceID: '{rid}',
         },
       },

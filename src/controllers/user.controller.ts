@@ -34,11 +34,11 @@ import {
 import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
 import {MyUserProfile} from '../components/jwt-authentication/types';
-import {User} from '../models';
+import {Email, User} from '../models';
 import {CredentialRepository, UserRepository} from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
-import {OtpService, SmsTac, XmlToJsonService} from '../services';
+import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
@@ -53,6 +53,7 @@ export class UserController {
     @inject('services.XmlToJsonService')
     protected xmlToJsonService: XmlToJsonService,
     @inject('services.OtpService') protected otpService: OtpService,
+    @inject('services.EmailService') protected emailService: EmailService,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
@@ -368,6 +369,14 @@ export class UserController {
     }
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
+
+    const email = new Email({
+      to: 'balainkk@gmail.com',
+      subject: 'test',
+      content: token,
+    });
+
+    await this.emailService.sendMail(email);
 
     return {result: bRetCode, token: token};
   }

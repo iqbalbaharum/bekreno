@@ -43,6 +43,12 @@ export class Credential extends Entity {
   })
   updatedAt: Date;
 
+  @property({
+    type: 'boolean',
+    default: true,
+  })
+  isActive: Boolean;
+
   @belongsTo(() => User)
   userId: string;
 

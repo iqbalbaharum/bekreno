@@ -1,8 +1,9 @@
-import {Entity, hasOne, model, property} from '@loopback/repository';
+import {hasOne, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {Credential} from './credential.model';
 
 @model()
-export class User extends Entity {
+export class User extends BaseEntity {
   @property({
     type: 'string',
     id: true,
@@ -27,18 +28,6 @@ export class User extends Entity {
     type: 'string',
   })
   email?: string;
-
-  @property({
-    type: 'date',
-    default: Date(),
-  })
-  createdAt: Date;
-
-  @property({
-    type: 'date',
-    default: Date(),
-  })
-  updatedAt: Date;
 
   @hasOne(() => Credential)
   credential: Credential;

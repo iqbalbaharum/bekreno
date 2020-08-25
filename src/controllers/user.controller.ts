@@ -3,6 +3,7 @@ import {
   AuthenticationBindings,
   UserService,
 } from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 import {Getter, inject} from '@loopback/core';
 import {
   Count,
@@ -42,6 +43,18 @@ import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
+
+// ACL
+const RESOURCE_NAME = 'user';
+const ACL_PROJECT = {
+  view: {
+    resource: `${RESOURCE_NAME}*`,
+    scopes: ['view'],
+    allowedRoles: ['admin'],
+  },
+};
+
+// END ACL
 
 export class UserController {
   constructor(
@@ -129,6 +142,7 @@ export class UserController {
   }
 
   @get('/user', {
+    security: OPERATION_SECURITY_SPEC,
     responses: {
       '200': {
         description: 'Array of User model instances',
@@ -143,6 +157,8 @@ export class UserController {
       },
     },
   })
+  @authenticate('jwt')
+  @authorize(ACL_PROJECT.view)
   async find(@param.filter(User) filter?: Filter<User>): Promise<User[]> {
     return this.userRepository.find(filter);
   }

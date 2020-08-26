@@ -59,6 +59,7 @@
     "@types/xml2js": "^0.4.5",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "loopback-connector-mysql": "^5.4.4",
     "loopback-connector-rest": "^3.7.0",
     "moment": "^2.27.0",

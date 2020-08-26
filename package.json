@@ -45,13 +45,14 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/authentication": "^5.0.0",
-    "@loopback/boot": "^2.4.0",
-    "@loopback/core": "^2.9.2",
-    "@loopback/repository": "^2.10.0",
-    "@loopback/rest": "^5.2.1",
-    "@loopback/rest-explorer": "^2.2.7",
-    "@loopback/service-proxy": "^2.3.5",
+    "@loopback/authentication": "^6.0.0",
+    "@loopback/authorization": "^0.6.5",
+    "@loopback/boot": "^2.5.0",
+    "@loopback/core": "^2.9.4",
+    "@loopback/repository": "^2.11.1",
+    "@loopback/rest": "^6.1.0",
+    "@loopback/rest-explorer": "^2.2.9",
+    "@loopback/service-proxy": "^2.3.7",
     "@types/bcryptjs": "^2.4.2",
     "@types/dotenv": "^8.2.0",
     "@types/nodemailer": "^6.4.0",
@@ -67,12 +68,12 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "@loopback/build": "^6.1.1",
+    "@loopback/build": "^6.2.1",
     "source-map-support": "^0.5.19",
-    "@loopback/testlab": "^3.2.1",
-    "@types/node": "^10.17.27",
-    "@loopback/eslint-config": "^8.0.4",
-    "eslint": "^7.5.0",
+    "@loopback/testlab": "^3.2.3",
+    "@types/node": "^10.17.28",
+    "@loopback/eslint-config": "^9.0.1",
+    "eslint": "^7.7.0",
     "typescript": "~3.9.7"
   }
 }

@@ -22,7 +22,7 @@ export class MyUserService implements UserService<User, Credentials> {
     const invalidCredentialsError = 'Invalid mobile or password.';
 
     const foundUser = await this.userRepository.findOne({
-      where: {mobile: credentials.mobile},
+      where: {email: credentials.email},
     });
 
     if (!foundUser) {

@@ -1,7 +1,8 @@
 import {UserProfile} from '@loopback/security';
+import {Role} from '../../../models';
 
 export interface MyUserProfile extends UserProfile {
   user: string;
-  roles: string[];
+  roles: Role[];
   mobile: string;
 }

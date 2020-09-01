@@ -128,6 +128,41 @@ export class UserController {
       throw new HttpErrors.BadRequest('This mobile already exists');
     }
   }
+@post('/user/admin/root', {
+    responses: {
+      '200': {
+        description: 'User model instance',
+        content: {'application/json': {schema: getModelSchemaRef(User)}},
+      },
+    },
+  })
+  async createAdminRoot(
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {schema: SignUpSchema},
+      },
+    })
+    credential: Credentials,
+  ): Promise<User> {
+   
+    if ((await this.userRepository.count()).count) {
+      throw new HttpErrors.BadRequest('Root admin can only be created when there no other user record');
+    }
+
+    const userCreated = await this.userRepository.create({
+      mobile: credential.mobile,
+      email: credential.email,
+      name: credential.name,
+    });
+
+    await this.credentialRepository.create({
+      password: await this.passwordHasher.hashPassword(credential.password),
+      userId: userCreated.uuid,
+    });
+
+    return userCreated
+  }
 
   @get('/user/count', {
     responses: {

@@ -14,3 +14,4 @@ export * from './module.model';
 export * from './module-permission.model';
 export * from './operation.model';
 export * from './operation-permission.model';
+export * from './user-role.model';

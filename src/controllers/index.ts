@@ -8,3 +8,4 @@ export * from './permission.controller';
 export * from './role.controller';
 export * from './user.controller';
 export * from './zone.controller';
+export * from './user-role.controller';

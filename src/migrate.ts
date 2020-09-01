@@ -16,6 +16,7 @@ export async function migrate(args: string[]) {
       'Company',
       'Zone',
       'Role',
+      'UserRole',
       'Permission',
       'Rolepermission',
       'Module',

@@ -179,7 +179,7 @@ export class PermissionController {
     await this.permissionRepository.deleteById(id);
   }
 
-  @post('/permissions/{id}/assign', {
+  @post('/permissions/{id}/role/assign', {
     responses: {
       '200': {
         description: 'Assign permission to role',
@@ -206,7 +206,7 @@ export class PermissionController {
     return this.permissionRepository.findById(id);
   }
 
-  @post('/permissions/{id}/unassign', {
+  @post('/permissions/{id}/role/unassign', {
     responses: {
       '200': {
         description: 'unassign permission from role',

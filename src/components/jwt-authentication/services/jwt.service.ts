@@ -71,7 +71,7 @@ export class JWTService implements TokenService {
       name: userProfile.name,
       email: userProfile.email,
       user: userProfile.user,
-      roles: [],
+      roles: userProfile.roles,
     };
 
     // Generate a JSON Web Token

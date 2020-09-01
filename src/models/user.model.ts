@@ -1,6 +1,8 @@
-import {hasOne, model, property} from '@loopback/repository';
+import {hasOne, model, property, hasMany} from '@loopback/repository';
 import {BaseEntity} from './base-entity.model';
 import {Credential} from './credential.model';
+import {Role} from './role.model';
+import {UserRole} from './user-role.model';
 
 @model()
 export class User extends BaseEntity {
@@ -31,6 +33,9 @@ export class User extends BaseEntity {
 
   @hasOne(() => Credential)
   credential: Credential;
+
+  @hasMany(() => Role, {through: {model: () => UserRole, keyFrom: 'userUuid', keyTo: 'roleUuid'}})
+  roles: Role[];
 
   constructor(data?: Partial<User>) {
     super(data);

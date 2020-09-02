@@ -36,7 +36,7 @@ import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Email, User} from '../models';
-import {CredentialRepository, UserRepository} from '../repositories';
+import {CredentialRepository, UserRepository, RoleRepository} from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
 import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
@@ -75,6 +75,8 @@ export class UserController {
     public passwordHasher: PasswordHasher,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<UserProfile>,
+    @repository(RoleRepository)
+    public roleRepository: RoleRepository,
   ) {}
 
   @post('/user', {
@@ -150,6 +152,14 @@ export class UserController {
       throw new HttpErrors.BadRequest('Root admin can only be created when there no other user record');
     }
 
+    const roleMaster = await this.roleRepository.findOne({
+      where: {name: 'master'},
+    })
+
+    if(!roleMaster) {
+       throw new HttpErrors.BadRequest('Invalid role data. Please reseed role with default value');
+    }
+
     const userCreated = await this.userRepository.create({
       mobile: credential.mobile,
       email: credential.email,
@@ -160,6 +170,8 @@ export class UserController {
       password: await this.passwordHasher.hashPassword(credential.password),
       userId: userCreated.uuid,
     });
+
+    await this.userRepository.roles(userCreated.uuid).link(roleMaster.uuid)
 
     return userCreated
   }
@@ -314,6 +326,7 @@ export class UserController {
     credential: Credentials,
   ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
+    
     const userProfile = this.userService.convertToUserProfile(
       user,
     ) as MyUserProfile;

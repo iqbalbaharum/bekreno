@@ -1,0 +1,7 @@
+{
+  "data": [
+    { "name": "master" },
+    { "name": "admin" },
+    { "name": "user" }  
+  ]
+}

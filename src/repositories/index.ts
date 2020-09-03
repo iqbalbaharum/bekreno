@@ -12,3 +12,4 @@ export * from './module-permission.repository';
 export * from './operation-permission.repository';
 export * from './operation.repository';
 export * from './user-role.repository';
+export * from './session.repository';

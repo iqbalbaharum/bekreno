@@ -3,6 +3,7 @@ import {BaseEntity} from './base-entity.model';
 import {Credential} from './credential.model';
 import {Role} from './role.model';
 import {UserRole} from './user-role.model';
+import {Session} from './session.model';
 
 @model()
 export class User extends BaseEntity {
@@ -30,12 +31,15 @@ export class User extends BaseEntity {
     type: 'string',
   })
   email?: string;
-
+  
   @hasOne(() => Credential)
   credential: Credential;
 
   @hasMany(() => Role, {through: {model: () => UserRole, keyFrom: 'userUuid', keyTo: 'roleUuid'}})
   roles: Role[];
+
+  @hasMany(() => Session, {keyTo: 'userUuid'})
+  sessions: Session[];
 
   constructor(data?: Partial<User>) {
     super(data);

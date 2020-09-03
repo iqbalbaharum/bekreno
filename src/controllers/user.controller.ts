@@ -36,7 +36,7 @@ import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Email, User} from '../models';
-import {CredentialRepository, UserRepository, RoleRepository} from '../repositories';
+import {CredentialRepository, UserRepository, RoleRepository, SessionRepository} from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
 import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
@@ -77,6 +77,8 @@ export class UserController {
     public getCurrentUser: Getter<UserProfile>,
     @repository(RoleRepository)
     public roleRepository: RoleRepository,
+    @repository(SessionRepository)
+    public sessionRepository: SessionRepository,
   ) {}
 
   @post('/user', {
@@ -327,13 +329,38 @@ export class UserController {
   ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
     
-    const userProfile = this.userService.convertToUserProfile(
-      user,
-    ) as MyUserProfile;
+    const session = await this.userRepository.sessions(user.uuid).create({});
+    
+    if(!session) {
+      throw new HttpErrors.InternalServerError('Error in creating user session.')
+    }
+
+    const userProfile = this.userService.convertToUserProfile(user) as MyUserProfile;
+    userProfile.session = session.uuid!
+    
     const token = await this.jwtService.generateToken(userProfile);
 
     return {token: token};
   }
+
+   @post('/user/logout', {
+    security: OPERATION_SECURITY_SPEC,
+    responses: {
+      '200': {
+        description: 'User logging out from the system',
+      },
+    },
+  })
+  @authenticate('jwt')
+  async logout(): Promise<{result: string}> {
+    const userProfile = await this.getCurrentUser()
+    await this.sessionRepository.deleteById(userProfile.session)
+
+    return {result: 'success'}
+  }
+  
+  
+
 
   @get('/me', {
     security: OPERATION_SECURITY_SPEC,

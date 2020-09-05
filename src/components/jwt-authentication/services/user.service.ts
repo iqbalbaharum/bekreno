@@ -51,12 +51,11 @@ export class MyUserService implements UserService<User, Credentials> {
 
   convertToUserProfile(user: User): MyUserProfile {
     return {
-      [securityId]: user.uuid!,
+      [securityId]: user.email,
       name: user.name,
-      user: user.uuid!,
       email: user.email,
       mobile: user.mobile,
-      roles: user.roles,
+      roles: [], // TODO: temporary until inclusionResolver available
       session: '',
       permissions: [],
     };

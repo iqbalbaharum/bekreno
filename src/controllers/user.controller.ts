@@ -328,15 +328,30 @@ export class UserController {
     credential: Credentials,
   ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
-    
     const session = await this.userRepository.sessions(user.uuid).create({});
     
     if(!session) {
       throw new HttpErrors.InternalServerError('Error in creating user session.')
     }
-
+    
     const userProfile = this.userService.convertToUserProfile(user) as MyUserProfile;
     userProfile.session = session.uuid!
+
+    // TODO: Inclusionresolver in HasManyThrough is not implemented in loopback
+    const roles = await this.userRepository.roles(user.uuid).find({
+      fields: {
+        'name': true,
+        'createdAt': false,
+        'updatedAt': false,
+        'deletedAt': false,
+      }
+    })
+    
+    userProfile.roles = []
+    roles.forEach(role => {
+      userProfile.roles.push(role.name)
+    })
+    // END TODO
     
     const token = await this.jwtService.generateToken(userProfile);
 

@@ -30,7 +30,7 @@ export class User extends BaseEntity {
   @property({
     type: 'string',
   })
-  email?: string;
+  email: string;
   
   @hasOne(() => Credential)
   credential: Credential;

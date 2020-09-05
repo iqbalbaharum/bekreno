@@ -40,13 +40,12 @@ export class JWTService implements TokenService {
       userProfile = Object.assign(
         {[securityId]: '', name: ''},
         {
-          [securityId]: decodedToken.id,
+          [securityId]: decodedToken.session,
           name: decodedToken.name,
           id: decodedToken.uuid,
           email: decodedToken.email,
           mobile: decodedToken.mobile,
-          user: decodedToken.user,
-          roles: [],
+          roles: decodedToken.roles,
           session: decodedToken.session,
         },
       );
@@ -71,7 +70,6 @@ export class JWTService implements TokenService {
       mobile: userProfile.mobile,
       name: userProfile.name,
       email: userProfile.email,
-      user: userProfile.user,
       roles: userProfile.roles,
       session: userProfile.session,
     };

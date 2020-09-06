@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {model, property, belongsTo} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {User} from './user.model';
 
 @model()
 export class Session extends BaseEntity {
@@ -11,10 +12,8 @@ export class Session extends BaseEntity {
   })
   uuid?: string;
 
-  @property({
-    type: 'string',
-  })
-  userUuid?: string;
+  @belongsTo(() => User, {name: 'user'})
+  userUuid: string;
 
   constructor(data?: Partial<Session>) {
     super(data);

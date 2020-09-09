@@ -126,6 +126,16 @@ export class UserController {
         password: await this.passwordHasher.hashPassword(credential.password),
         userId: userCreated.uuid,
       });
+      
+      const roleUser = await this.roleRepository.findOne({
+        where: {name: 'user'},
+      })
+
+      if(!roleUser) {
+         throw new HttpErrors.BadRequest('Invalid role data. Please reseed role with default value');
+      }
+
+      await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid)
 
       return userCreated;
     } else {

@@ -19,7 +19,32 @@ export class EmailTemplate extends Entity {
   @property({
     type: 'string',
   })
+  sender?: string;
+
+  @property({
+    type: 'string',
+  })
+  from?: string;
+
+  @property({
+    type: 'string',
+  })
+  replyTo?: string;
+
+  @property({
+    type: 'string',
+  })
+  subject?: string;
+
+  @property({
+    type: 'string',
+  })
   body?: string;
+
+  @property({
+    type: 'string',
+  })
+  language?: string;
 
   constructor(data?: Partial<EmailTemplate>) {
     super(data);

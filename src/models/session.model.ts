@@ -1,4 +1,4 @@
-import {model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
 import {User} from './user.model';
 
@@ -11,6 +11,16 @@ export class Session extends BaseEntity {
     defaultFn: 'uuidv4',
   })
   uuid?: string;
+
+  @property({
+    type: 'string',
+  })
+  deviceToken?: string;
+
+  @property({
+    type: 'string',
+  })
+  pushType?: string;
 
   @belongsTo(() => User, {name: 'user'})
   userUuid: string;

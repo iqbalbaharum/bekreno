@@ -36,10 +36,21 @@ import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Email, User} from '../models';
-import {CredentialRepository, UserRepository, RoleRepository, SessionRepository} from '../repositories';
+import {
+  CredentialRepository,
+  RoleRepository,
+  SessionRepository,
+  UserRepository,
+} from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
-import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
+import {
+  EmailService,
+  OtpService,
+  PushNotificationService,
+  SmsTac,
+  XmlToJsonService,
+} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
@@ -67,6 +78,8 @@ export class UserController {
     protected xmlToJsonService: XmlToJsonService,
     @inject('services.OtpService') protected otpService: OtpService,
     @inject('services.EmailService') protected emailService: EmailService,
+    @inject('services.PushNotificationService')
+    protected pushNotificationService: PushNotificationService,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
@@ -112,7 +125,6 @@ export class UserController {
 
       const token = this.otpService.getOTPCode();
 
-      // send SMS
       const validity: string = process.env.OTP_VALIDITY ?? '0';
       await this.smsTacService.sendSms(
         credential.mobile,
@@ -126,23 +138,31 @@ export class UserController {
         password: await this.passwordHasher.hashPassword(credential.password),
         userId: userCreated.uuid,
       });
-      
+
       const roleUser = await this.roleRepository.findOne({
         where: {name: 'user'},
-      })
+      });
 
-      if(!roleUser) {
-         throw new HttpErrors.BadRequest('Invalid role data. Please reseed role with default value');
+      if (!roleUser) {
+        throw new HttpErrors.BadRequest(
+          'Invalid role data. Please reseed role with default value',
+        );
       }
 
-      await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid)
+      await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid);
+
+      await this.pushNotificationService.notify({
+        deviceId: 'test',
+        title: 'test',
+        message: 'test',
+      });
 
       return userCreated;
     } else {
       throw new HttpErrors.BadRequest('This mobile already exists');
     }
   }
-@post('/user/admin/root', {
+  @post('/user/admin/root', {
     responses: {
       '200': {
         description: 'User model instance',
@@ -159,17 +179,20 @@ export class UserController {
     })
     credential: Credentials,
   ): Promise<User> {
-   
     if ((await this.userRepository.count()).count) {
-      throw new HttpErrors.BadRequest('Root admin can only be created when there no other user record');
+      throw new HttpErrors.BadRequest(
+        'Root admin can only be created when there no other user record',
+      );
     }
 
     const roleMaster = await this.roleRepository.findOne({
       where: {name: 'master'},
-    })
+    });
 
-    if(!roleMaster) {
-       throw new HttpErrors.BadRequest('Invalid role data. Please reseed role with default value');
+    if (!roleMaster) {
+      throw new HttpErrors.BadRequest(
+        'Invalid role data. Please reseed role with default value',
+      );
     }
 
     const userCreated = await this.userRepository.create({
@@ -183,9 +206,9 @@ export class UserController {
       userId: userCreated.uuid,
     });
 
-    await this.userRepository.roles(userCreated.uuid).link(roleMaster.uuid)
+    await this.userRepository.roles(userCreated.uuid).link(roleMaster.uuid);
 
-    return userCreated
+    return userCreated;
   }
 
   @get('/user/count', {
@@ -339,36 +362,40 @@ export class UserController {
   ): Promise<{token: string}> {
     const user = await this.userService.verifyCredentials(credential);
     const session = await this.userRepository.sessions(user.uuid).create({});
-    
-    if(!session) {
-      throw new HttpErrors.InternalServerError('Error in creating user session.')
+
+    if (!session) {
+      throw new HttpErrors.InternalServerError(
+        'Error in creating user session.',
+      );
     }
-    
-    const userProfile = this.userService.convertToUserProfile(user) as MyUserProfile;
-    userProfile.session = session.uuid!
+
+    const userProfile = this.userService.convertToUserProfile(
+      user,
+    ) as MyUserProfile;
+    userProfile.session = session.uuid!;
 
     // TODO: Inclusionresolver in HasManyThrough is not implemented in loopback
     const roles = await this.userRepository.roles(user.uuid).find({
       fields: {
-        'name': true,
-        'createdAt': false,
-        'updatedAt': false,
-        'deletedAt': false,
-      }
-    })
-    
-    userProfile.roles = []
+        name: true,
+        createdAt: false,
+        updatedAt: false,
+        deletedAt: false,
+      },
+    });
+
+    userProfile.roles = [];
     roles.forEach(role => {
-      userProfile.roles.push(role.name)
-    })
+      userProfile.roles.push(role.name);
+    });
     // END TODO
-    
+
     const token = await this.jwtService.generateToken(userProfile);
 
     return {token: token};
   }
 
-   @post('/user/logout', {
+  @post('/user/logout', {
     security: OPERATION_SECURITY_SPEC,
     responses: {
       '200': {
@@ -378,14 +405,11 @@ export class UserController {
   })
   @authenticate('jwt')
   async logout(): Promise<{result: string}> {
-    const userProfile = await this.getCurrentUser()
-    await this.sessionRepository.deleteById(userProfile.session)
+    const userProfile = await this.getCurrentUser();
+    await this.sessionRepository.deleteById(userProfile.session);
 
-    return {result: 'success'}
+    return {result: 'success'};
   }
-  
-  
-
 
   @get('/me', {
     security: OPERATION_SECURITY_SPEC,

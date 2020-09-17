@@ -44,13 +44,7 @@ import {
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
-import {
-  EmailService,
-  OtpService,
-  PushNotificationService,
-  SmsTac,
-  XmlToJsonService,
-} from '../services';
+import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
@@ -78,8 +72,6 @@ export class UserController {
     protected xmlToJsonService: XmlToJsonService,
     @inject('services.OtpService') protected otpService: OtpService,
     @inject('services.EmailService') protected emailService: EmailService,
-    @inject('services.PushNotificationService')
-    protected pushNotificationService: PushNotificationService,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
@@ -150,12 +142,6 @@ export class UserController {
       }
 
       await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid);
-
-      await this.pushNotificationService.notify({
-        deviceId: 'test',
-        title: 'test',
-        message: 'test',
-      });
 
       return userCreated;
     } else {

@@ -473,6 +473,40 @@ export class UserController {
   //   return {refresh: bRetCode};
   // }
 
+  @get('/user/forget/{email}', {
+    responses: {
+      '200': {
+        description: 'Forget password',
+      },
+    },
+  })
+  async forgetPasswordByEmail(
+    @param.path.string('email') userEmail: string,
+  ): Promise<{result: Boolean; token: string}> {
+    let bRetCode = false;
+    const userExisted = await this.userRepository.findOne({
+      where: {email: userEmail},
+    });
+
+    if (!userExisted) {
+      throw new HttpErrors.Unauthorized('No valid users');
+    } else {
+      bRetCode = true;
+    }
+
+    const token = await this.jwtService.generateResetPasswordToken(userExisted);
+
+    const email = new Email({
+      to: userEmail,
+      subject: 'Forget Password',
+      content: token,
+    });
+
+    await this.emailService.sendMail(email);
+
+    return {result: bRetCode, token: token};
+  }
+
   @get('/user/forget/{mobile}', {
     responses: {
       '200': {
@@ -480,7 +514,7 @@ export class UserController {
       },
     },
   })
-  async forgetPassword(
+  async forgetPasswordByMobile(
     @param.path.string('mobile') mobile: string,
   ): Promise<{result: Boolean; token: string}> {
     let bRetCode = false;
@@ -497,8 +531,8 @@ export class UserController {
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
     const email = new Email({
-      to: 'balainkk@gmail.com',
-      subject: 'test',
+      to: userExisted.mobile,
+      subject: 'Forget Password',
       content: token,
     });
 

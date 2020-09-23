@@ -12,7 +12,6 @@ import * as dotenv from 'dotenv';
 import path from 'path';
 import {JWTAuthenticationComponent} from './components/jwt-authentication';
 import {SECURITY_SCHEME_SPEC} from './components/jwt-authentication/services';
-import {PaymentExtensionPointComponent} from './components/payment-extension';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
@@ -40,7 +39,6 @@ export class BalJsApplication extends BootMixin(
     this.component(RestExplorerComponent);
     this.component(AuthenticationComponent);
     this.component(JWTAuthenticationComponent);
-    this.component(PaymentExtensionPointComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

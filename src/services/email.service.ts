@@ -21,7 +21,7 @@ export class EmailService {
     });
 
     return transporter.sendMail({
-      from: 'balainkk@gmail.com',
+      from: process.env.SMTP_USERNAME,
       to: email.to,
       subject: email.subject,
       html: email.content,

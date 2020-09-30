@@ -473,7 +473,7 @@ export class UserController {
   //   return {refresh: bRetCode};
   // }
 
-  @get('/user/forget/{email}', {
+  @get('/user/forget/email/{email}', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -497,7 +497,7 @@ export class UserController {
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
     const email = new Email({
-      to: userEmail,
+      to: userExisted.email,
       subject: 'Forget Password',
       content: token,
     });
@@ -507,7 +507,7 @@ export class UserController {
     return {result: bRetCode, token: token};
   }
 
-  @get('/user/forget/{mobile}', {
+  @get('/user/forget/mobile/{mobile}', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -531,7 +531,7 @@ export class UserController {
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
     const email = new Email({
-      to: userExisted.mobile,
+      to: userExisted.email,
       subject: 'Forget Password',
       content: token,
     });

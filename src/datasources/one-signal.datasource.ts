@@ -2,10 +2,59 @@ import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
 const config = {
-  name: 'onesignal',
-  connector: 'loopback-connector-onesignal',
-  apiId: process.env.ONESIGNAL_APPID,
-  apiKey: process.env.ONESIGNAL_APPKEY,
+  name: 'OneSignal',
+  connector: 'rest',
+  options: {
+    headers: {
+      Authorization: `Basic ${process.env.ONESIGNAL_APPKEY}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  },
+  operations: [
+    {
+      template: {
+        method: 'POST',
+        url: 'https://onesignal.com/api/v1/notifications',
+        body: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          app_id: process.env.ONESIGNAL_APPID,
+          contents: {
+            en: '{message}',
+          },
+          headings: {
+            en: '{title}',
+          },
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          included_segments: '{segment}',
+        },
+      },
+      functions: {
+        notifyBySegment: ['segment', 'title', 'message'],
+      },
+    },
+    {
+      template: {
+        method: 'POST',
+        url: 'https://onesignal.com/api/v1/notifications',
+        body: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          app_id: process.env.ONESIGNAL_APPID,
+          contents: {
+            en: '{message}',
+          },
+          headings: {
+            en: '{title}',
+          },
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          include_external_user_ids: '{externalIds}',
+        },
+      },
+      functions: {
+        notifyByDevice: ['externalIds', 'title', 'message'],
+      },
+    },
+  ],
+  crud: false,
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -16,11 +65,11 @@ const config = {
 export class OneSignalDataSource
   extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'onesignal';
+  static dataSourceName = 'OneSignal';
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.onesignal', {optional: true})
+    @inject('datasources.config.OneSignal', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);

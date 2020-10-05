@@ -1,5 +1,5 @@
 {
-  "name": "bal-js",
+  "name": "krenolms",
   "version": "1.0.0",
   "description": "Iqbal based NodeJS framework",
   "keywords": [
@@ -25,8 +25,8 @@
     "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
-    "docker:build": "docker build -t bal-js .",
-    "docker:run": "docker run -p 3000:3000 -d bal-js",
+    "docker:build": "docker build -t krenolms .",
+    "docker:run": "docker run -p 3000:3000 -d krenolms",
     "migrate": "node -r dotenv/config ./dist/migrate",
     "openapi-spec": "node ./dist/openapi-spec",
     "prestart": "npm run build",

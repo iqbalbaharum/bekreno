@@ -13,3 +13,8 @@ export * from './operation-permission.repository';
 export * from './operation.repository';
 export * from './user-role.repository';
 export * from './session.repository';
+export * from './dev-environment.repository';
+export * from './journal.repository';
+export * from './project.repository';
+export * from './track.repository';
+export * from './user-track.repository';

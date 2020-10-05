@@ -4,6 +4,8 @@ import {Credential} from './credential.model';
 import {Role} from './role.model';
 import {UserRole} from './user-role.model';
 import {Session} from './session.model';
+import {Track} from './track.model';
+import {UserTrack} from './user-track.model';
 
 @model()
 export class User extends BaseEntity {
@@ -40,6 +42,9 @@ export class User extends BaseEntity {
 
   @hasMany(() => Session, {keyTo: 'userUuid'})
   sessions: Session[];
+
+  @hasMany(() => Track, {through: {model: () => UserTrack}})
+  tracks: Track[];
 
   constructor(data?: Partial<User>) {
     super(data);

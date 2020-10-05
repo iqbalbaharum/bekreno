@@ -14,3 +14,8 @@ export * from './session.model';
 export * from './user-role.model';
 export * from './user.model';
 export * from './zone.model';
+export * from './track.model';
+export * from './project.model';
+export * from './journal.model';
+export * from './dev-environment.model';
+export * from './user-track.model';

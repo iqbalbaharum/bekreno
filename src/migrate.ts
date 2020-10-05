@@ -23,7 +23,12 @@ export async function migrate(args: string[]) {
       'ModulePermission',
       'Operation',
       'OperationPermission',
-      'Session' 
+      'Session',
+      'Track',
+      'UserTrack',
+      'Project',
+      'Journal',
+      'DevEnvironment',
     ],
   });
 

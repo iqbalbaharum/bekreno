@@ -7,7 +7,7 @@ const config = {
   options: {
     headers: {
       Authorization: `Basic ${process.env.ONESIGNAL_APPKEY}`,
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/json',
     },
   },
   operations: [

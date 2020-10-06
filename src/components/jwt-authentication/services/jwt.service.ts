@@ -47,6 +47,7 @@ export class JWTService implements TokenService {
           mobile: decodedToken.mobile,
           roles: decodedToken.roles,
           session: decodedToken.session,
+          user: decodedToken.user,
         },
       );
     } catch (error) {
@@ -72,6 +73,7 @@ export class JWTService implements TokenService {
       email: userProfile.email,
       roles: userProfile.roles,
       session: userProfile.session,
+      user: userProfile.user,
     };
 
     // Generate a JSON Web Token

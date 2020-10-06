@@ -5,11 +5,11 @@
 
 import {AuthenticationStrategy, TokenService} from '@loopback/authentication';
 import {inject} from '@loopback/core';
+import {repository} from '@loopback/repository';
 import {HttpErrors, Request} from '@loopback/rest';
-import {repository} from '@loopback/repository'
 import {UserProfile} from '@loopback/security';
-import {TokenServiceBindings} from '../keys';
 import {SessionRepository} from '../../../repositories';
+import {TokenServiceBindings} from '../keys';
 
 export class JWTAuthenticationStrategy implements AuthenticationStrategy {
   name = 'jwt';
@@ -18,15 +18,15 @@ export class JWTAuthenticationStrategy implements AuthenticationStrategy {
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public tokenService: TokenService,
     @repository(SessionRepository)
-    private sessionRepository: SessionRepository
+    private sessionRepository: SessionRepository,
   ) {}
 
   async authenticate(request: Request): Promise<UserProfile | undefined> {
     const token: string = this.extractCredentials(request);
     const userProfile: UserProfile = await this.tokenService.verifyToken(token);
-    
-    if(!await this.verifySession(userProfile.session)) {
-      throw new HttpErrors.Unauthorized('Your session has expired')
+
+    if (!(await this.verifySession(userProfile.session))) {
+      throw new HttpErrors.Unauthorized('Your session has expired');
     }
 
     return userProfile;
@@ -58,13 +58,13 @@ export class JWTAuthenticationStrategy implements AuthenticationStrategy {
   }
 
   async verifySession(sessionId: string): Promise<boolean> {
-    
     try {
-      await this.sessionRepository.findById(sessionId)
-    } catch(err) {
-      return false
+      await this.sessionRepository.findById(sessionId);
+    } catch (err) {
+      console.log(err);
+      return false;
     }
 
-    return true
+    return true;
   }
 }

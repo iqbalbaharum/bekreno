@@ -58,8 +58,7 @@ export class MyUserService implements UserService<User, Credentials> {
       roles: [], // TODO: temporary until inclusionResolver available
       session: '',
       permissions: [],
+      user: user.uuid!,
     };
   }
-
- 
 }

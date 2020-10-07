@@ -1,7 +1,7 @@
-import {model, property, hasMany} from '@loopback/repository';
+import {hasMany, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
-import {User} from './user.model';
 import {UserTrack} from './user-track.model';
+import {User} from './user.model';
 
 @model()
 export class Track extends BaseEntity {
@@ -34,6 +34,14 @@ export class Track extends BaseEntity {
     type: 'string',
   })
   icon?: string;
+
+  @property({
+    type: 'string',
+    mysql: {
+      dataType: 'text',
+    },
+  })
+  about?: string;
 
   @hasMany(() => User, {through: {model: () => UserTrack}})
   users: User[];

@@ -1,32 +1,13 @@
-import {
-  Count,
-  CountSchema,
-  Filter,
-  repository,
-  Where,
-} from '@loopback/repository';
-  import {
-  del,
-  get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
-  patch,
-  post,
-  requestBody,
-} from '@loopback/rest';
-import {
-User,
-UserRole,
-Role,
-} from '../models';
+import {Filter, repository} from '@loopback/repository';
+import {get, getModelSchemaRef, param, post, requestBody} from '@loopback/rest';
+import {Role, User} from '../models';
 import {UserRepository} from '../repositories';
 import {UserRoleSchema} from './../schema';
 
 export class UserRoleController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+  ) {}
 
   @get('/users/{id}/roles', {
     responses: {
@@ -60,10 +41,11 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema      
+          schema: UserRoleSchema,
         },
       },
-    }) role: {roleId: string},
+    })
+    role: {roleId: string},
   ): Promise<User> {
     await this.userRepository.roles(id).link(role.roleId);
     return this.userRepository.findById(id);
@@ -82,10 +64,11 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema      
+          schema: UserRoleSchema,
         },
       },
-    }) role: {roleId: string},
+    })
+    role: {roleId: string},
   ): Promise<User> {
     await this.userRepository.roles(id).unlink(role.roleId);
     return this.userRepository.findById(id);

@@ -18,3 +18,6 @@ export * from './journal.controller';
 export * from './dev-environment.controller';
 export * from './user-track.controller';
 export * from './track-user.controller';
+export * from './user-journal.controller';
+export * from './journal-project.controller';
+export * from './journal-user.controller';

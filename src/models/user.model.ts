@@ -4,6 +4,7 @@ import {Credential} from './credential.model';
 import {Role} from './role.model';
 import {UserRole} from './user-role.model';
 import {Session} from './session.model';
+import {Profile} from './profile.model';
 
 @model()
 export class User extends BaseEntity {
@@ -40,6 +41,9 @@ export class User extends BaseEntity {
 
   @hasMany(() => Session, {keyTo: 'userUuid'})
   sessions: Session[];
+
+  @hasOne(() => Profile)
+  profile: Profile;
 
   constructor(data?: Partial<User>) {
     super(data);

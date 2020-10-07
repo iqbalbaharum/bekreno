@@ -38,6 +38,7 @@ import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Email, User} from '../models';
 import {
   CredentialRepository,
+  ProfileRepository,
   RoleRepository,
   SessionRepository,
   UserRepository,
@@ -67,6 +68,8 @@ export class UserController {
     public userRepository: UserRepository,
     @repository(CredentialRepository)
     public credentialRepository: CredentialRepository,
+    @repository(ProfileRepository)
+    public profileRepository: ProfileRepository,
     @inject('services.SmsTac') protected smsTacService: SmsTac,
     @inject('services.XmlToJsonService')
     protected xmlToJsonService: XmlToJsonService,
@@ -128,6 +131,10 @@ export class UserController {
 
       await this.credentialRepository.create({
         password: await this.passwordHasher.hashPassword(credential.password),
+        userId: userCreated.uuid,
+      });
+
+      await this.profileRepository.create({
         userId: userCreated.uuid,
       });
 

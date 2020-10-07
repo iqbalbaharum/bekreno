@@ -23,7 +23,8 @@ export async function migrate(args: string[]) {
       'ModulePermission',
       'Operation',
       'OperationPermission',
-      'Session' 
+      'Session',
+      'Profile',
     ],
   });
 

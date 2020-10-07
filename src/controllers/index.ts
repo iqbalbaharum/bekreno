@@ -12,3 +12,4 @@ export * from './user-role.controller';
 export * from './session.controller';
 export * from './session-user.controller';
 export * from './notification.controller';
+export * from './user-profile.controller';

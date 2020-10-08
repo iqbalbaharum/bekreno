@@ -2,6 +2,7 @@ import {hasMany, hasOne, model, property} from '@loopback/repository';
 import {BaseEntity} from './base-entity.model';
 import {Credential} from './credential.model';
 import {Journal} from './journal.model';
+import {Profile} from './profile.model';
 import {Role} from './role.model';
 import {Session} from './session.model';
 import {Track} from './track.model';
@@ -51,6 +52,9 @@ export class User extends BaseEntity {
 
   @hasMany(() => Journal)
   journals: Journal[];
+
+  @hasOne(() => Profile)
+  profile: Profile;
 
   constructor(data?: Partial<User>) {
     super(data);

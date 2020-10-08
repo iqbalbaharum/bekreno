@@ -29,6 +29,7 @@ export async function migrate(args: string[]) {
       'Project',
       'Journal',
       'DevEnvironment',
+      'Profile',
     ],
   });
 

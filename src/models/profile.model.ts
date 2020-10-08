@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {User} from './user.model';
 
 @model()
 export class Profile extends BaseEntity {
@@ -46,9 +47,7 @@ export class Profile extends BaseEntity {
   })
   birthday?: string;
 
-  @property({
-    type: 'string',
-  })
+  @belongsTo(() => User)
   userId?: string;
 
   constructor(data?: Partial<Profile>) {

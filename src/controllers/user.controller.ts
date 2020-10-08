@@ -118,7 +118,7 @@ export class UserController {
         name: credential.name,
       });
 
-      if (process.env.OTP_ENABLE) {
+      if (process.env.OTP_ENABLE === '1') {
         const token = this.otpService.getOTPCode();
 
         const validity: string = process.env.OTP_VALIDITY ?? '0';

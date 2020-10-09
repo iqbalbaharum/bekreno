@@ -22,6 +22,9 @@ export class Journal extends BaseEntity {
   @property({
     type: 'string',
     required: true,
+    mysql: {
+      dataType: 'text',
+    },
   })
   detail: string;
 

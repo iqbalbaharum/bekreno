@@ -20,3 +20,4 @@ export * from './user-role.model';
 export * from './user-track.model';
 export * from './user.model';
 export * from './zone.model';
+export * from './comment.model';

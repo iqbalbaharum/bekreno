@@ -1,7 +1,8 @@
-import {belongsTo, model, property} from '@loopback/repository';
+import {belongsTo, model, property, hasMany} from '@loopback/repository';
 import {BaseEntity} from '.';
 import {Project} from './project.model';
 import {User} from './user.model';
+import {Comment} from './comment.model';
 
 @model()
 export class Journal extends BaseEntity {
@@ -28,11 +29,20 @@ export class Journal extends BaseEntity {
   })
   detail: string;
 
+  @property({
+    type: 'string',
+    default: 'new',
+  })
+  status: string;
+
   @belongsTo(() => Project)
   projectId: string;
 
   @belongsTo(() => User)
   userId: string;
+
+  @hasMany(() => Comment)
+  comments: Comment[];
 
   constructor(data?: Partial<Journal>) {
     super(data);

@@ -22,3 +22,5 @@ export * from './user-role.controller';
 export * from './user-track.controller';
 export * from './user.controller';
 export * from './zone.controller';
+export * from './journal-comment.controller';
+export * from './comment-user.controller';

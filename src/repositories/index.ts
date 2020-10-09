@@ -19,3 +19,4 @@ export * from './user-role.repository';
 export * from './user-track.repository';
 export * from './user.repository';
 export * from './zone.repository';
+export * from './comment.repository';

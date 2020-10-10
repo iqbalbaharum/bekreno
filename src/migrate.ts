@@ -31,6 +31,7 @@ export async function migrate(args: string[]) {
       'DevEnvironment',
       'Profile',
       'Comment',
+      'Material',
     ],
   });
 

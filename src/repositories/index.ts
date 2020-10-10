@@ -20,3 +20,4 @@ export * from './user-track.repository';
 export * from './user.repository';
 export * from './zone.repository';
 export * from './comment.repository';
+export * from './material.repository';

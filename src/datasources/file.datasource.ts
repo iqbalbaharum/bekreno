@@ -9,7 +9,8 @@ const config = {
   keyId: process.env.STORAGE_PROVIDER_KEY_ID,
   // provider: 'filesystem',
   // root: './storage',
-  // nameConflict: 'makeUnique'
+  nameConflict: 'makeUnique',
+  makeUnique: true
 };
 
 // Observe application's life cycle to disconnect the datasource when

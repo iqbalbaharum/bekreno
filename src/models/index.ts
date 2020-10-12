@@ -15,3 +15,5 @@ export * from './user-role.model';
 export * from './user.model';
 export * from './zone.model';
 export * from './profile.model';
+export * from './container.model';
+export * from './file.model';

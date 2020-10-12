@@ -50,7 +50,7 @@ export class Profile extends BaseEntity {
   @property({
     type: 'string',
   })
-  image?: string;
+  avatar?: string;
 
 
   @belongsTo(() => User)

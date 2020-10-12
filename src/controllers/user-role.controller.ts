@@ -1,24 +1,18 @@
 import {
-  Count,
-  CountSchema,
   Filter,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
-  import {
-  del,
+import {
   get,
   getModelSchemaRef,
-  getWhereSchemaFor,
+
   param,
-  patch,
+
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {
-User,
-UserRole,
-Role,
+  Role, User
 } from '../models';
 import {UserRepository} from '../repositories';
 import {UserRoleSchema} from './../schema';
@@ -60,7 +54,7 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema      
+          schema: UserRoleSchema
         },
       },
     }) role: {roleId: string},
@@ -82,7 +76,7 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema      
+          schema: UserRoleSchema
         },
       },
     }) role: {roleId: string},

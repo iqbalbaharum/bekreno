@@ -4,12 +4,12 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'File',
   connector: 'loopback-component-storage',
-  // provider: 'amazon',
-  // key: '',
-  // keyId: '',
-  provider: 'filesystem',
-  root: './storage',
-  nameConflict: 'makeUnique'
+  provider: process.env.STORAGE_PROVIDER,
+  key: process.env.STORAGE_PROVIDER_KEY,
+  keyId: process.env.STORAGE_PROVIDER_KEY_ID,
+  // provider: 'filesystem',
+  // root: './storage',
+  // nameConflict: 'makeUnique'
 };
 
 // Observe application's life cycle to disconnect the datasource when

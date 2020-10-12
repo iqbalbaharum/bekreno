@@ -1,16 +1,15 @@
 import {
-  /* inject, Application, CoreBindings, */
-  lifeCycleObserver, // The decorator
-  LifeCycleObserver, // The interface
+  lifeCycleObserver,
+  LifeCycleObserver
 } from '@loopback/core';
-
 import {
   repository
-} from '@loopback/repository'
-
-import {Role} from './../models';
+} from '@loopback/repository';
 import {RoleRepository} from '../repositories';
-import * as roles from './../server/roles.json'
+import {Role} from './../models';
+import * as roles from './../server/roles.json';
+
+
 
 /**
  * This class will be bound to the application as a `LifeCycleObserver` during
@@ -20,8 +19,8 @@ import * as roles from './../server/roles.json'
 export class RoleSeederObserver implements LifeCycleObserver {
 
   constructor(
-    @repository(RoleRepository) 
-    public roleRepository: RoleRepository  
+    @repository(RoleRepository)
+    public roleRepository: RoleRepository
   ) {}
 
   /**
@@ -30,7 +29,7 @@ export class RoleSeederObserver implements LifeCycleObserver {
   async start(): Promise<void> {
     const count = (await this.roleRepository.count()).count;
     if(count !== 0) return
-    
+
     roles.data.forEach(role => {
       this.roleRepository.create(new Role(role))
     })

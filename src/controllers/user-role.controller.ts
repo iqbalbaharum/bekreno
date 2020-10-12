@@ -1,6 +1,17 @@
-import {Filter, repository} from '@loopback/repository';
-import {get, getModelSchemaRef, param, post, requestBody} from '@loopback/rest';
-import {Role, User} from '../models';
+import {
+  Filter,
+  repository
+} from '@loopback/repository';
+import {
+  get,
+  getModelSchemaRef,
+  param,
+  post,
+  requestBody
+} from '@loopback/rest';
+import {
+  Role, User
+} from '../models';
 import {UserRepository} from '../repositories';
 import {UserRoleSchema} from './../schema';
 
@@ -41,7 +52,7 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema,
+          schema: UserRoleSchema
         },
       },
     })
@@ -64,7 +75,7 @@ export class UserRoleController {
     @requestBody({
       content: {
         'application/json': {
-          schema: UserRoleSchema,
+          schema: UserRoleSchema
         },
       },
     })

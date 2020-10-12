@@ -47,6 +47,12 @@ export class Profile extends BaseEntity {
   })
   birthday?: string;
 
+  @property({
+    type: 'string',
+  })
+  avatar?: string;
+
+
   @belongsTo(() => User)
   userId?: string;
 

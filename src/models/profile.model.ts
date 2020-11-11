@@ -39,6 +39,9 @@ export class Profile extends BaseEntity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
   })
   about?: string;
 

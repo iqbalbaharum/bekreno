@@ -7,4 +7,3 @@ export * from './otp-credential.schema';
 export * from './role-permission.schema';
 export * from './signup.schema';
 export * from './user-role.schema';
-export * from './user-track.schema';

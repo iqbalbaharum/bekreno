@@ -5,9 +5,8 @@ import {Journal} from './journal.model';
 import {Profile} from './profile.model';
 import {Role} from './role.model';
 import {Session} from './session.model';
-import {Track} from './track.model';
 import {UserRole} from './user-role.model';
-import {UserTrack} from './user-track.model';
+import {Repository} from './repository.model';
 
 @model()
 export class User extends BaseEntity {
@@ -47,14 +46,14 @@ export class User extends BaseEntity {
   @hasMany(() => Session, {keyTo: 'userUuid'})
   sessions: Session[];
 
-  @hasMany(() => Track, {through: {model: () => UserTrack}})
-  tracks: Track[];
-
   @hasMany(() => Journal)
   journals: Journal[];
 
   @hasOne(() => Profile)
   profile: Profile;
+
+  @hasMany(() => Repository)
+  repositories: Repository[];
 
   constructor(data?: Partial<User>) {
     super(data);

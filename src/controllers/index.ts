@@ -19,12 +19,15 @@ export * from './project.controller';
 export * from './role.controller';
 export * from './session-user.controller';
 export * from './session.controller';
-export * from './track-user.controller';
-export * from './track.controller';
 export * from './user-journal.controller';
 export * from './user-profile.controller';
 export * from './user-role.controller';
-export * from './user-track.controller';
 export * from './user.controller';
 export * from './zone.controller';
 
+export * from './position.controller';
+export * from './repository.controller';
+export * from './user-repository.controller';
+export * from './project-repository.controller';
+export * from './repository-dev-environment.controller';
+export * from './dev-environment-repository.controller';

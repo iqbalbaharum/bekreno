@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {model, property, hasMany} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {Repository} from './repository.model';
 
 @model()
 export class DevEnvironment extends BaseEntity {
@@ -33,6 +34,9 @@ export class DevEnvironment extends BaseEntity {
     default: true,
   })
   active?: boolean;
+
+  @hasMany(() => Repository)
+  repositories: Repository[];
 
   constructor(data?: Partial<DevEnvironment>) {
     super(data);

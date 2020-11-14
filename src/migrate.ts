@@ -24,14 +24,14 @@ export async function migrate(args: string[]) {
       'Operation',
       'OperationPermission',
       'Session',
-      'Track',
-      'UserTrack',
       'Project',
       'Journal',
       'DevEnvironment',
       'Profile',
       'Comment',
       'Material',
+      'Position',
+      'Repository'
     ],
   });
 

@@ -1,16 +1,16 @@
 import {DefaultCrudRepository} from '@loopback/repository';
-import {UserTrack, UserTrackRelations} from '../models';
+import {Position, PositionRelations} from '../models';
 import {MysqlDataSource} from '../datasources';
 import {inject} from '@loopback/core';
 
-export class UserTrackRepository extends DefaultCrudRepository<
-  UserTrack,
-  typeof UserTrack.prototype.id,
-  UserTrackRelations
+export class PositionRepository extends DefaultCrudRepository<
+  Position,
+  typeof Position.prototype.id,
+  PositionRelations
 > {
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
   ) {
-    super(UserTrack, dataSource);
+    super(Position, dataSource);
   }
 }

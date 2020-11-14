@@ -2,7 +2,7 @@ import {model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
 
 @model()
-export class UserTrack extends BaseEntity {
+export class Position extends BaseEntity {
   @property({
     type: 'string',
     id: true,
@@ -15,21 +15,20 @@ export class UserTrack extends BaseEntity {
     type: 'string',
     required: true,
   })
-  trackId: string;
+  title: string;
 
   @property({
     type: 'string',
-    required: true,
   })
-  userId: string;
+  description?: string;
 
-  constructor(data?: Partial<UserTrack>) {
+  constructor(data?: Partial<Position>) {
     super(data);
   }
 }
 
-export interface UserTrackRelations {
+export interface PositionRelations {
   // describe navigational properties here
 }
 
-export type UserTrackWithRelations = UserTrack & UserTrackRelations;
+export type PositionWithRelations = Position & PositionRelations;

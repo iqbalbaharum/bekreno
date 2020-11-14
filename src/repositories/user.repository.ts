@@ -13,20 +13,16 @@ import {
   Profile,
   Role,
   Session,
-  Track,
   User,
   UserRelations,
-  UserRole,
-  UserTrack,
-} from '../models';
+  UserRole, Repository} from '../models';
 import {CredentialRepository} from './credential.repository';
 import {JournalRepository} from './journal.repository';
 import {ProfileRepository} from './profile.repository';
 import {RoleRepository} from './role.repository';
 import {SessionRepository} from './session.repository';
-import {TrackRepository} from './track.repository';
 import {UserRoleRepository} from './user-role.repository';
-import {UserTrackRepository} from './user-track.repository';
+import {RepositoryRepository} from './repository.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -50,13 +46,6 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.uuid
   >;
 
-  public readonly tracks: HasManyThroughRepositoryFactory<
-    Track,
-    typeof Track.prototype.id,
-    UserTrack,
-    typeof User.prototype.uuid
-  >;
-
   public readonly journals: HasManyRepositoryFactory<
     Journal,
     typeof User.prototype.uuid
@@ -65,6 +54,8 @@ export class UserRepository extends DefaultCrudRepository<
     Profile,
     typeof User.prototype.uuid
   >;
+
+  public readonly repositories: HasManyRepositoryFactory<Repository, typeof User.prototype.uuid>;
 
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
@@ -76,26 +67,19 @@ export class UserRepository extends DefaultCrudRepository<
     protected roleRepositoryGetter: Getter<RoleRepository>,
     @repository.getter('SessionRepository')
     protected sessionRepositoryGetter: Getter<SessionRepository>,
-    @repository.getter('UserTrackRepository')
-    protected userTrackRepositoryGetter: Getter<UserTrackRepository>,
-    @repository.getter('TrackRepository')
-    protected trackRepositoryGetter: Getter<TrackRepository>,
     @repository.getter('JournalRepository')
     protected journalRepositoryGetter: Getter<JournalRepository>,
     @repository.getter('ProfileRepository')
-    protected profileRepositoryGetter: Getter<ProfileRepository>,
+    protected profileRepositoryGetter: Getter<ProfileRepository>, @repository.getter('RepositoryRepository') protected repositoryRepositoryGetter: Getter<RepositoryRepository>,
   ) {
     super(User, dataSource);
+    this.repositories = this.createHasManyRepositoryFactoryFor('repositories', repositoryRepositoryGetter,);
+    this.registerInclusionResolver('repositories', this.repositories.inclusionResolver);
     this.journals = this.createHasManyRepositoryFactoryFor(
       'journals',
       journalRepositoryGetter,
     );
     this.registerInclusionResolver('journals', this.journals.inclusionResolver);
-    this.tracks = this.createHasManyThroughRepositoryFactoryFor(
-      'tracks',
-      trackRepositoryGetter,
-      userTrackRepositoryGetter,
-    );
     this.profile = this.createHasOneRepositoryFactoryFor(
       'profile',
       profileRepositoryGetter,

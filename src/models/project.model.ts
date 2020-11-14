@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {model, property, hasMany} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {Repository} from './repository.model';
 
 @model()
 export class Project extends BaseEntity {
@@ -19,8 +20,19 @@ export class Project extends BaseEntity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
   })
   description?: string;
+
+  @property({
+    type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
+  })
+  requirements?: string;
 
   @property({
     type: 'boolean',
@@ -32,6 +44,9 @@ export class Project extends BaseEntity {
     type: 'string',
   })
   icon?: string;
+
+  @hasMany(() => Repository)
+  repositories: Repository[];
 
   constructor(data?: Partial<Project>) {
     super(data);

@@ -31,3 +31,5 @@ export * from './user-repository.controller';
 export * from './project-repository.controller';
 export * from './repository-dev-environment.controller';
 export * from './dev-environment-repository.controller';
+export * from './repository-user.controller';
+export * from './repository-project.controller';

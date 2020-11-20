@@ -16,16 +16,10 @@ export class DevEnvironment extends BaseEntity {
     type: 'string',
     required: true,
   })
-  name: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
   language: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
   version?: number;
 

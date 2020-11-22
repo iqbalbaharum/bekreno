@@ -3,6 +3,7 @@ import {BaseEntity} from '.';
 import {DevEnvironment} from './dev-environment.model';
 import {User} from './user.model';
 import {Project} from './project.model';
+import {Position} from './position.model';
 
 @model()
 export class Repository extends BaseEntity {
@@ -37,6 +38,9 @@ export class Repository extends BaseEntity {
 
   @belongsTo(() => Project)
   projectId: string;
+
+  @belongsTo(() => Position)
+  positionId: string;
 
   constructor(data?: Partial<Repository>) {
     super(data);

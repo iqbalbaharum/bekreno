@@ -15,7 +15,7 @@ import {
   Session,
   User,
   UserRelations,
-  UserRole, Repository} from '../models';
+  UserRole, Repository, Application, UserApplication} from '../models';
 import {CredentialRepository} from './credential.repository';
 import {JournalRepository} from './journal.repository';
 import {ProfileRepository} from './profile.repository';
@@ -23,6 +23,8 @@ import {RoleRepository} from './role.repository';
 import {SessionRepository} from './session.repository';
 import {UserRoleRepository} from './user-role.repository';
 import {RepositoryRepository} from './repository.repository';
+import {UserApplicationRepository} from './user-application.repository';
+import {ApplicationRepository} from './application.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -57,6 +59,13 @@ export class UserRepository extends DefaultCrudRepository<
 
   public readonly repositories: HasManyRepositoryFactory<Repository, typeof User.prototype.uuid>;
 
+  public readonly applications: HasManyThroughRepositoryFactory<
+    Application, 
+    typeof Application.prototype.id,
+    UserApplication,
+    typeof User.prototype.uuid
+  >;
+
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
     @repository.getter('CredentialRepository')
@@ -70,7 +79,13 @@ export class UserRepository extends DefaultCrudRepository<
     @repository.getter('JournalRepository')
     protected journalRepositoryGetter: Getter<JournalRepository>,
     @repository.getter('ProfileRepository')
-    protected profileRepositoryGetter: Getter<ProfileRepository>, @repository.getter('RepositoryRepository') protected repositoryRepositoryGetter: Getter<RepositoryRepository>,
+    protected profileRepositoryGetter: Getter<ProfileRepository>, 
+    @repository.getter('RepositoryRepository')
+    protected repositoryRepositoryGetter: Getter<RepositoryRepository>,
+    @repository.getter('UserApplicationRepository')
+    protected userApplicationRepositoryGetter: Getter<UserApplicationRepository>,
+    @repository.getter('ApplicationRepository')
+    protected applicationRepositoryGetter: Getter<ApplicationRepository>,
   ) {
     super(User, dataSource);
     this.repositories = this.createHasManyRepositoryFactoryFor('repositories', repositoryRepositoryGetter,);
@@ -94,6 +109,11 @@ export class UserRepository extends DefaultCrudRepository<
       'roles',
       roleRepositoryGetter,
       userRoleRepositoryGetter,
+    );
+    this.applications = this.createHasManyThroughRepositoryFactoryFor(
+      'applications',
+      applicationRepositoryGetter,
+      userApplicationRepositoryGetter,
     );
     this.credential = this.createHasOneRepositoryFactoryFor(
       'credential',

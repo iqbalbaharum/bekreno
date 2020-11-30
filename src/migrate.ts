@@ -31,7 +31,9 @@ export async function migrate(args: string[]) {
       'Comment',
       'Material',
       'Position',
-      'Repository'
+      'Repository',
+      'Application',
+      'UserApplication'
     ],
   });
 

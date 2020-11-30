@@ -25,3 +25,5 @@ export * from './zone.model';
 
 export * from './repository.model';
 export * from './position.model';
+export * from './application.model';
+export * from './user-application.model';

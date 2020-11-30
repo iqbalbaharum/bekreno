@@ -21,3 +21,5 @@ export * from './comment.repository';
 export * from './material.repository';
 export * from './position.repository';
 export * from './repository.repository';
+export * from './application.repository';
+export * from './user-application.repository';

@@ -7,6 +7,8 @@ import {Role} from './role.model';
 import {Session} from './session.model';
 import {UserRole} from './user-role.model';
 import {Repository} from './repository.model';
+import {Application} from './application.model';
+import {UserApplication} from './user-application.model';
 
 @model()
 export class User extends BaseEntity {
@@ -54,6 +56,11 @@ export class User extends BaseEntity {
 
   @hasMany(() => Repository)
   repositories: Repository[];
+
+  @hasMany(() => Application, {
+    through: {model: () => UserApplication, keyFrom: 'userId', keyTo: 'applicationId'}
+  })
+  applications: Application[];
 
   constructor(data?: Partial<User>) {
     super(data);

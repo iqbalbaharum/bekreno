@@ -1,32 +1,34 @@
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
+  del, get,
   getModelSchemaRef,
-  patch,
+  HttpErrors, param,
+  patch, post,
   put,
-  del,
-  requestBody,
-  HttpErrors
+  requestBody
 } from '@loopback/rest';
-import {User, UserApplication, Application} from '../models';
-import { UserApplicationSchema } from '../schema'
+import {MyUserProfile} from '../components/jwt-authentication/types';
+import {Application, User, UserApplication} from '../models';
 import {UserApplicationRepository, UserRepository} from '../repositories';
+import {UserApplicationSchema} from '../schema';
 
 export class UserApplicationController {
   constructor(
-    @repository(UserRepository) 
+    @repository(UserRepository)
     protected userRepository: UserRepository,
     @repository(UserApplicationRepository)
     public userApplicationRepository : UserApplicationRepository,
+    @inject.getter(AuthenticationBindings.CURRENT_USER)
+    public getCurrentUser: Getter<MyUserProfile>,
   ) {}
 
   @get('/users/{id}/applications', {
@@ -52,7 +54,7 @@ export class UserApplicationController {
     });
   }
 
-  @post('/users/{id}/applications/apply', {
+  @post('/users/applications/apply', {
     responses: {
       '200': {
         description: 'create a Application model instance',
@@ -60,8 +62,8 @@ export class UserApplicationController {
       },
     },
   })
+  @authenticate('jwt')
   async apply(
-    @param.path.string('id') id: typeof User.prototype.uuid,
     @requestBody({
       content: {
         'application/json': {
@@ -71,9 +73,12 @@ export class UserApplicationController {
     })
     application: {applicationId: string},
   ): Promise<UserApplication> {
-    let result = await this.userApplicationRepository.find({
+
+    const userProfile = await this.getCurrentUser();
+
+    const result = await this.userApplicationRepository.find({
       where: {
-        userId: id,
+        userId: userProfile.user,
         applicationId: application.applicationId
       }
     })
@@ -82,8 +87,8 @@ export class UserApplicationController {
       throw new HttpErrors.BadRequest('User have apply for the application')
     }
 
-    await this.userRepository.applications(id).link(application.applicationId);
-    return this.userApplicationRepository.findById(id);
+    await this.userRepository.applications(userProfile.user).link(application.applicationId);
+    return this.userApplicationRepository.findById(userProfile.user);
   }
 
   @post('/users/{id}/applications/unapply', {
@@ -105,7 +110,7 @@ export class UserApplicationController {
     })
     application: {applicationId: string},
   ): Promise<UserApplication> {
-    let result = await this.userApplicationRepository.find({
+    const result = await this.userApplicationRepository.find({
       where: {
         userId: id,
         applicationId: application.applicationId

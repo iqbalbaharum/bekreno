@@ -63,6 +63,9 @@ export class Application extends BaseEntity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text',
+    },
   })
   questions?: string;
 

@@ -1,5 +1,7 @@
-import {model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {ApplicationProject} from './application-project.model';
+import {Project} from './project.model';
 import {User} from './user.model';
 
 @model()
@@ -83,6 +85,9 @@ export class Application extends BaseEntity {
 
   @belongsTo(() => User, {name: 'user'})
   createdby: string;
+
+  @hasMany(() => Project, {through: {model: () => ApplicationProject, keyFrom: 'applicationId', keyTo: 'projectId'}})
+  projects: Project[];
 
   constructor(data?: Partial<Application>) {
     super(data);

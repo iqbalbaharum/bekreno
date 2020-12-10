@@ -49,7 +49,7 @@
     "@loopback/authorization": "^0.6.5",
     "@loopback/boot": "^2.5.0",
     "@loopback/core": "^2.9.4",
-    "@loopback/repository": "^2.11.1",
+    "@loopback/repository": "^3.1.0",
     "@loopback/rest": "^6.1.0",
     "@loopback/rest-explorer": "^2.2.9",
     "@loopback/service-proxy": "^2.3.7",

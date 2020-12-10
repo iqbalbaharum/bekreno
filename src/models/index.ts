@@ -27,3 +27,4 @@ export * from './repository.model';
 export * from './position.model';
 export * from './application.model';
 export * from './user-application.model';
+export * from './application-project.model';

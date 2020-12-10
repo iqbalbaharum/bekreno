@@ -1,0 +1,7 @@
+{
+  "data": [
+    { "name": "Programmer", "description": "Programmer" },
+    { "name": "Database", "description": "Database" },
+    { "name": "Ui/Ux", "description": "Ui/Ux" }
+  ]
+}

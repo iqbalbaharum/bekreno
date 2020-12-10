@@ -33,7 +33,8 @@ export async function migrate(args: string[]) {
       'Position',
       'Repository',
       'Application',
-      'UserApplication'
+      'UserApplication',
+      'ApplicationProject'
     ],
   });
 

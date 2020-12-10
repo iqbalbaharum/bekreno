@@ -35,6 +35,11 @@ export class Profile extends BaseEntity {
   @property({
     type: 'string',
   })
+  telegram?: string;
+
+  @property({
+    type: 'string',
+  })
   state?: string;
 
   @property({

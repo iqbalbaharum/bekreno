@@ -54,6 +54,32 @@ export class UserApplicationController {
     });
   }
 
+  @get('/users/applications', {
+    responses: {
+      '200': {
+        description: 'Array of User has many Application through UserApplication',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(Application)},
+          },
+        },
+      },
+    },
+  })
+  @authenticate('jwt')
+  async findCurrentUserApplication(
+    @param.query.object('filter') filter?: Filter<Application>,
+  ): Promise<UserApplication[]> {
+
+    const userProfile = await this.getCurrentUser();
+
+    return this.userApplicationRepository.find({
+      where: {
+        userId: userProfile.user
+      }
+    }, filter);
+  }
+
   @post('/users/applications/apply', {
     responses: {
       '200': {

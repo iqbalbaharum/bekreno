@@ -30,7 +30,7 @@ export class UserApplicationController {
     public userApplicationRepository : UserApplicationRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<MyUserProfile>,
-    @inject('Service.EmailService') protected emailService: EmailService
+    @inject('services.EmailService') protected emailService: EmailService
   ) {}
 
   @get('/users/{id}/applications', {

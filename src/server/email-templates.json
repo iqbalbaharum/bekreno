@@ -1,0 +1,11 @@
+{
+  "data": [
+    { "code": "WELCOMEMSG", "name": "Welcome message", "sender": "", "from": "noreply@krenovator.cc", "replyTo": "noreply", "subject": "Welcome to Krenovator", "body": "", "language": "en"  },
+    { "code": "PASSWORDRESET", "name": "Password reset", "sender": "", "from": "noreply@krenovator.cc", "replyTo": "noreply", "subject": "", "body": "", "language": "en"  },
+    { "code": "APPLIEDTSA", "name": "Applied TSA Entry Test", "sender": "", "from": "noreply@krenovator.cc", "replyTo": "noreply", "subject": "", "body": "", "language": "en"  },
+
+    { "code": "CONTAINER", "name": "Email Container", "body": "", "language": "en"  },
+    { "code": "HEADER", "name": "Email Header", "body": "", "language": "en"  },
+    { "code": "FOOTER", "name": "Email Footer", "body": "", "language": "en"  }
+  ]
+}

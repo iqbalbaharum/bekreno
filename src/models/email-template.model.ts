@@ -19,6 +19,18 @@ export class EmailTemplate extends Entity {
   @property({
     type: 'string',
   })
+  code?: string;
+
+  @property({
+    type: 'string',
+    default: 'email',
+    required: true
+  })
+  type: string;
+
+  @property({
+    type: 'string',
+  })
   sender?: string;
 
   @property({
@@ -38,6 +50,9 @@ export class EmailTemplate extends Entity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
   })
   body?: string;
 

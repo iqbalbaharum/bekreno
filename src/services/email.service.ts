@@ -1,12 +1,21 @@
 import {bind, BindingScope} from '@loopback/core';
+import {repository} from '@loopback/repository';
+import {HttpErrors} from '@loopback/rest';
+import ejs from 'ejs';
 import * as nodemailer from 'nodemailer';
 import {Email} from '../models';
+import {EmailRepository, EmailTemplateRepository} from '../repositories';
 
-@bind({scope: BindingScope.TRANSIENT})
+@bind({scope: BindingScope.SINGLETON})
 export class EmailService {
-  constructor() {}
 
-  async sendMail(email: Email): Promise<Object> {
+
+  constructor(
+    @repository(EmailRepository) protected emailRepository: EmailRepository,
+    @repository(EmailTemplateRepository) protected emailTemplateRepository: EmailTemplateRepository
+  ) {}
+
+  private async sendMail(email: Email): Promise<Object> {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       secure: Boolean(process.env.SMTP_SECURE),
@@ -27,4 +36,60 @@ export class EmailService {
       html: email.content,
     });
   }
-}
+
+  async sendEmailFromTemplate(code: string, data: ejs.Data, to: string) : Promise<Object> {
+
+    const bodyContent = await this.emailTemplateRepository.findOne({
+      where: {code: code}
+    })
+
+    if (!bodyContent) {
+      throw new HttpErrors.InternalServerError('Invalid Email. Please make sure there is an email template under the code')
+    }
+
+    const body = ejs.render(bodyContent.body!, data)
+
+    // Setup email container
+    const container = await this.emailTemplateRepository.findOne({
+      where: {code: 'CONTAINER'}
+    })
+
+    const headerContent = await this.emailTemplateRepository.findOne({
+      where: {code: 'HEADER'}
+    })
+
+    const footerContent = await this.emailTemplateRepository.findOne({
+      where: {code: 'FOOTER'}
+    })
+
+    if(!container || !headerContent || !footerContent || !bodyContent) {
+      throw new HttpErrors.InternalServerError('Internal error. Please reseed a fresh copy of email templates.')
+    }
+
+    const template = ejs.render(container.body!, {
+      content: {
+        header: headerContent.body,
+        footer: footerContent.body,
+        body: body
+      }
+    })
+
+    const email = new Email({
+      to: to,
+      subject: bodyContent.subject,
+      content: template,
+    });
+
+    return this.sendMail(email)
+  }
+
+  async sendEmailRaw(content: string, subject: string, to: string) : Promise<Object> {
+    const email = new Email({
+      to: to,
+      subject: subject,
+      content: to
+    });
+
+    return this.sendMail(email)
+  }
+ }

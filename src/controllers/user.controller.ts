@@ -1,7 +1,7 @@
 import {
   authenticate,
   AuthenticationBindings,
-  UserService,
+  UserService
 } from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {Getter, inject} from '@loopback/core';
@@ -11,7 +11,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -24,24 +24,24 @@ import {
   put,
   requestBody,
   Response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
-  UserServiceBindings,
+  UserServiceBindings
 } from '../components/jwt-authentication/keys';
 import {JWTService} from '../components/jwt-authentication/services';
 import {PasswordHasher} from '../components/jwt-authentication/services/hash.password.bcryptjs';
 import {MyUserProfile} from '../components/jwt-authentication/types';
-import {Email, User} from '../models';
+import {User} from '../models';
 import {
   CredentialRepository,
   ProfileRepository,
   RoleRepository,
   SessionRepository,
-  UserRepository,
+  UserRepository
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
@@ -151,6 +151,8 @@ export class UserController {
       }
 
       await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid);
+
+      await this.emailService.sendEmailFromTemplate('WELCOMEMSG', { name: userCreated.name }, userCreated.email);
 
       return userCreated;
     } else {
@@ -491,7 +493,7 @@ export class UserController {
   })
   async forgetPasswordByEmail(
     @param.path.string('email') userEmail: string,
-  ): Promise<{result: Boolean; token: string}> {
+  ): Promise<{result: Boolean}> {
     let bRetCode = false;
     const userExisted = await this.userRepository.findOne({
       where: {email: userEmail},
@@ -505,15 +507,9 @@ export class UserController {
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
-    const email = new Email({
-      to: userExisted.email,
-      subject: 'Forget Password',
-      content: token,
-    });
+    await this.emailService.sendEmailFromTemplate('PASSWORDRESET', { name: userExisted.name, token: token }, userExisted.email);
 
-    await this.emailService.sendMail(email);
-
-    return {result: bRetCode, token: token};
+    return {result: bRetCode};
   }
 
   @get('/user/forget/mobile/{mobile}', {
@@ -538,14 +534,6 @@ export class UserController {
     }
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
-
-    const email = new Email({
-      to: userExisted.email,
-      subject: 'Forget Password',
-      content: token,
-    });
-
-    await this.emailService.sendMail(email);
 
     return {result: bRetCode, token: token};
   }

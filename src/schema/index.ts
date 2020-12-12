@@ -1,5 +1,6 @@
 export * from './application-project.schema';
 export * from './credential.schema';
+export * from './email-test.schema';
 export * from './forget-password.schema';
 export * from './module-permission.schema';
 export * from './notification.schema';

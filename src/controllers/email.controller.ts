@@ -1,28 +1,37 @@
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
 import {Email} from '../models';
 import {EmailRepository} from '../repositories';
+import {EmailTestSchema} from '../schema';
+import {EmailService} from '../services';
+import {EmailTest} from '../types';
 
 export class EmailController {
   constructor(
     @repository(EmailRepository)
     public emailRepository : EmailRepository,
+    @inject('services.EmailService') protected emailService: EmailService,
   ) {}
 
   @post('/emails', {
@@ -169,5 +178,25 @@ export class EmailController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.emailRepository.deleteById(id);
+  }
+
+  @post('/emails/sendFromTemplate', {
+    responses: {
+      '200': {
+        description: 'Email model instance',
+        content: {'application/json': {schema: getModelSchemaRef(Email)}},
+      },
+    },
+  })
+  async testSendFromTemplate(
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {schema: EmailTestSchema},
+      },
+    })
+    emailTest: EmailTest,
+  ): Promise<Object> {
+    return this.emailService.sendEmailFromTemplate(emailTest.code, JSON.parse(emailTest.data), emailTest.to)
   }
 }

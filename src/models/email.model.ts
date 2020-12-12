@@ -17,6 +17,16 @@ export class Email extends Entity {
   to: string;
 
   @property({
+    type: 'string'
+  })
+  from: string;
+
+  @property({
+    type: 'string'
+  })
+  replyTo: string;
+
+  @property({
     type: 'string',
   })
   cc?: string;

@@ -20,6 +20,7 @@ import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Application, User, UserApplication} from '../models';
 import {UserApplicationRepository, UserRepository} from '../repositories';
 import {UserApplicationSchema} from '../schema';
+import {EmailService} from '../services';
 
 export class UserApplicationController {
   constructor(
@@ -29,6 +30,7 @@ export class UserApplicationController {
     public userApplicationRepository : UserApplicationRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<MyUserProfile>,
+    @inject('Service.EmailService') protected emailService: EmailService
   ) {}
 
   @get('/users/{id}/applications', {
@@ -114,6 +116,10 @@ export class UserApplicationController {
     }
 
     await this.userRepository.applications(userProfile.user).link(application.applicationId);
+
+    const user = await this.userRepository.findById(userProfile.user)
+    await this.emailService.sendEmailFromTemplate('APPLIEDTSA', { name: user.name }, user.email)
+
     return this.userApplicationRepository.findById(userProfile.user);
   }
 

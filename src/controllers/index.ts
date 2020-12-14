@@ -37,3 +37,5 @@ export * from './repository-position.controller';
 export * from './application.controller';
 export * from './application-user.controller';
 export * from './application-project.controller';
+export * from './user-application-user.controller';
+export * from './user-application-application.controller';

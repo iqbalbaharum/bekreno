@@ -100,18 +100,16 @@ export class UserApplicationController {
       },
     })
     application: {applicationId: string},
-  ): Promise<UserApplication> {
+  ): Promise<void> {
 
     const userProfile = await this.getCurrentUser();
 
-    const result = await this.userApplicationRepository.find({
-      where: {
-        userId: userProfile.user,
-        applicationId: application.applicationId
-      }
+    const result = await this.userApplicationRepository.count({
+      userId: userProfile.user,
+      applicationId: application.applicationId
     })
 
-    if(result.length > 0) {
+    if(result.count > 0) {
       throw new HttpErrors.BadRequest('User have apply for the application')
     }
 
@@ -119,8 +117,6 @@ export class UserApplicationController {
 
     const user = await this.userRepository.findById(userProfile.user)
     await this.emailService.sendEmailFromTemplate('APPLIEDTSA', { name: user.name }, user.email)
-
-    return this.userApplicationRepository.findById(userProfile.user);
   }
 
   @post('/users/{id}/applications/unapply', {

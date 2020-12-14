@@ -1,5 +1,7 @@
-import {model, property} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {Application} from './application.model';
+import {User} from './user.model';
 
 @model()
 export class UserApplication extends BaseEntity {
@@ -10,21 +12,11 @@ export class UserApplication extends BaseEntity {
     defaultFn: 'uuidv4',
   })
   id?: string;
-
   @property({
     type: 'string',
-    required: true,
-  })
-  userId: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  applicationId: string;
-
-  @property({
-    type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
   })
   answers?: string;
 
@@ -33,6 +25,12 @@ export class UserApplication extends BaseEntity {
     default: 'joined'
   })
   status: string;
+
+  @belongsTo(() => User)
+  userId: string;
+
+  @belongsTo(() => Application)
+  applicationId: string;
 
   constructor(data?: Partial<UserApplication>) {
     super(data);

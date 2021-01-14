@@ -1,3 +1,4 @@
+export * from './application-status.types';
 export * from './credential.types';
 export * from './email-test.types';
 export * from './forget-password.types';

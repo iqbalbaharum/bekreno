@@ -8,7 +8,7 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param,
+  getModelSchemaRef, HttpErrors, param,
 
 
   patch, post,
@@ -22,6 +22,8 @@ import {
 } from '@loopback/rest';
 import {Application} from '../models';
 import {ApplicationRepository} from '../repositories';
+import {ApplicationStatusSchema} from '../schema';
+import {ApplicationStatus} from '../types';
 
 export class ApplicationController {
   constructor(
@@ -51,6 +53,40 @@ export class ApplicationController {
     application: Omit<Application, 'id'>,
   ): Promise<Application> {
     return this.applicationRepository.create(application);
+  }
+
+  @post('/application/status', {
+    responses: {
+      '200': {
+        description: 'Application model instance',
+        content: {'application/json': {schema: getModelSchemaRef(Application)}},
+      },
+    },
+  })
+  async changeApplicationStatus(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: ApplicationStatusSchema,
+        }
+      }
+    })
+    applicationStatus: ApplicationStatus,
+  ): Promise<Application> {
+    const application = await this.applicationRepository.findById(applicationStatus.applicationId)
+
+    if(!application) {
+      throw new HttpErrors.UnprocessableEntity('Invalid application record')
+    }
+
+    application.status = applicationStatus.status
+
+    await this.applicationRepository.updateById(
+      applicationStatus.applicationId,
+      application
+    )
+
+    return application
   }
 
   @get('/application/count', {

@@ -76,6 +76,13 @@ export class Application extends BaseEntity {
   featured?: boolean;
 
   @property({
+    required: true,
+    type: 'string',
+    default: 'active',
+  })
+  status: string;
+
+  @property({
     type: 'string',
     default: 'online',
   })

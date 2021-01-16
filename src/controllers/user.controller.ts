@@ -462,28 +462,6 @@ export class UserController {
     return this.userRepository.findById(user.user);
   }
 
-  // @post('/user/otp/refresh', {
-  //   responses: {
-  //     '200': {
-  //       description: 'User model instance',
-  //     },
-  //   },
-  // })
-  // @authenticate('jwt')
-  // async refreshOtp(): Promise<{refresh: Boolean}> {
-  //   const bRetCode = true;
-
-  //   const token = this.otpService.getOTPCode();
-
-  //   await this.credentialRepository.updateById(user.user, {
-  //     password: await this.passwordHasher.hashPassword(credential.password),
-  //     token: token,
-  //     userId: userCreated.uuid,
-  //   });
-
-  //   return {refresh: bRetCode};
-  // }
-
   @get('/user/forget/email/{email}', {
     responses: {
       '200': {

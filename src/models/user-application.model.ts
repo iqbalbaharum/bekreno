@@ -1,7 +1,7 @@
 import {belongsTo, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
 import {Application} from './application.model';
-import {User} from './user.model';
+import {User, UserWithRelations} from './user.model';
 
 @model()
 export class UserApplication extends BaseEntity {
@@ -22,7 +22,13 @@ export class UserApplication extends BaseEntity {
 
   @property({
     type: 'string',
-    default: 'joined'
+    default: 'draft'
+  })
+  state: string;
+
+  @property({
+    type: 'string',
+    default: ''
   })
   status: string;
 
@@ -38,7 +44,7 @@ export class UserApplication extends BaseEntity {
 }
 
 export interface UserApplicationRelations {
-  // describe navigational properties here
+  user?: UserWithRelations
 }
 
 export type UserApplicationWithRelations = UserApplication & UserApplicationRelations;

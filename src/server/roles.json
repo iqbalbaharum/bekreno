@@ -1,7 +1,9 @@
 {
   "data": [
-    { "name": "master" },
-    { "name": "admin" },
-    { "name": "user" }  
+    { "uuid": "02fad9e2-48ab-4949-8bce-4f30af594505", "name": "master" },
+    { "uuid": "d26983b8-4c30-42ad-8654-4d85d650629d", "name": "user" },
+    { "uuid": "e47afab6-1326-494c-a75c-1d12329dfd46", "name": "admin" },
+    { "uuid": "d1690791-61d0-4b95-84fb-1c2d4d679351", "name": "cohort" },
+    { "uuid": "ad03f9e0-30d2-45bc-98a6-a699546aacb0", "name": "company" }
   ]
 }

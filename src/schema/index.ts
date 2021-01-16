@@ -1,5 +1,5 @@
+export * from './application-close.schema';
 export * from './application-project.schema';
-export * from './application-status.schema';
 export * from './credential.schema';
 export * from './email-test.schema';
 export * from './forget-password.schema';

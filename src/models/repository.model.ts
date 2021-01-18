@@ -1,9 +1,11 @@
-import {model, property, belongsTo} from '@loopback/repository';
+import {model, property, belongsTo, hasMany} from '@loopback/repository';
 import {BaseEntity} from '.';
 import {DevEnvironment} from './dev-environment.model';
 import {User} from './user.model';
 import {Project} from './project.model';
 import {Position} from './position.model';
+import {Note} from './note.model';
+import {RepositoryNote} from './repository-note.model';
 
 @model()
 export class Repository extends BaseEntity {
@@ -41,6 +43,9 @@ export class Repository extends BaseEntity {
 
   @belongsTo(() => Position)
   positionId: string;
+
+  @hasMany(() => Note, {through: {model: () => RepositoryNote}})
+  notes: Note[];
 
   constructor(data?: Partial<Repository>) {
     super(data);

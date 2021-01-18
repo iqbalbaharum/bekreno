@@ -32,9 +32,11 @@ export async function migrate(args: string[]) {
       'Material',
       'Position',
       'Repository',
+      'RepositoryNote',
       'Application',
       'UserApplication',
-      'ApplicationProject'
+      'ApplicationProject',
+      'Note'
     ],
   });
 

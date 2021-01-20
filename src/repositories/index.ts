@@ -27,3 +27,4 @@ export * from './user.repository';
 export * from './zone.repository';
 
 export * from './repository-note.repository';
+export * from './user-note.repository';

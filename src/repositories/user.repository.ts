@@ -15,7 +15,7 @@ import {
   Session,
   User,
   UserRelations,
-  UserRole, Repository, Application, UserApplication} from '../models';
+  UserRole, Repository, Application, UserApplication, Note, UserNote} from '../models';
 import {CredentialRepository} from './credential.repository';
 import {JournalRepository} from './journal.repository';
 import {ProfileRepository} from './profile.repository';
@@ -25,6 +25,8 @@ import {UserRoleRepository} from './user-role.repository';
 import {RepositoryRepository} from './repository.repository';
 import {UserApplicationRepository} from './user-application.repository';
 import {ApplicationRepository} from './application.repository';
+import {UserNoteRepository} from './user-note.repository';
+import {NoteRepository} from './note.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -66,6 +68,11 @@ export class UserRepository extends DefaultCrudRepository<
     typeof User.prototype.uuid
   >;
 
+  public readonly notes: HasManyThroughRepositoryFactory<Note, typeof Note.prototype.id,
+          UserNote,
+          typeof User.prototype.uuid
+        >;
+
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
     @repository.getter('CredentialRepository')
@@ -85,9 +92,11 @@ export class UserRepository extends DefaultCrudRepository<
     @repository.getter('UserApplicationRepository')
     protected userApplicationRepositoryGetter: Getter<UserApplicationRepository>,
     @repository.getter('ApplicationRepository')
-    protected applicationRepositoryGetter: Getter<ApplicationRepository>,
+    protected applicationRepositoryGetter: Getter<ApplicationRepository>, @repository.getter('UserNoteRepository') protected userNoteRepositoryGetter: Getter<UserNoteRepository>, @repository.getter('NoteRepository') protected noteRepositoryGetter: Getter<NoteRepository>,
   ) {
     super(User, dataSource);
+    this.notes = this.createHasManyThroughRepositoryFactoryFor('notes', noteRepositoryGetter, userNoteRepositoryGetter,);
+    this.registerInclusionResolver('notes', this.notes.inclusionResolver);
     this.repositories = this.createHasManyRepositoryFactoryFor('repositories', repositoryRepositoryGetter,);
     this.registerInclusionResolver('repositories', this.repositories.inclusionResolver);
     this.journals = this.createHasManyRepositoryFactoryFor(

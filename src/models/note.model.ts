@@ -18,6 +18,11 @@ export class Note extends BaseEntity {
   })
   text: string;
 
+  @property({
+    type: 'string'
+  })
+  sentiment: string;
+
   @belongsTo(() => User)
   toUserId: string;
 

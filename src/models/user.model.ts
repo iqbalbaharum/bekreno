@@ -9,6 +9,8 @@ import {UserRole} from './user-role.model';
 import {Repository} from './repository.model';
 import {Application} from './application.model';
 import {UserApplication} from './user-application.model';
+import {Note} from './note.model';
+import {UserNote} from './user-note.model';
 
 @model()
 export class User extends BaseEntity {
@@ -61,6 +63,9 @@ export class User extends BaseEntity {
     through: {model: () => UserApplication, keyFrom: 'userId', keyTo: 'applicationId'}
   })
   applications: Application[];
+
+  @hasMany(() => Note, {through: {model: () => UserNote}})
+  notes: Note[];
 
   constructor(data?: Partial<User>) {
     super(data);

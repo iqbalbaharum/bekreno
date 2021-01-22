@@ -6,6 +6,8 @@ import {Project} from './project.model';
 import {Position} from './position.model';
 import {Note} from './note.model';
 import {RepositoryNote} from './repository-note.model';
+import {Tags} from './tags.model';
+import {Taging} from './taging.model';
 
 @model()
 export class Repository extends BaseEntity {
@@ -46,6 +48,9 @@ export class Repository extends BaseEntity {
 
   @hasMany(() => Note, {through: {model: () => RepositoryNote}})
   notes: Note[];
+
+  @hasMany(() => Tags, {through: {model: () => Taging}})
+  tags: Tags[];
 
   constructor(data?: Partial<Repository>) {
     super(data);

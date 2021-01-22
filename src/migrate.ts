@@ -37,6 +37,8 @@ export async function migrate(args: string[]) {
       'Application',
       'UserApplication',
       'ApplicationProject',
+      'Tags',
+      'Taging',
       'Note'
     ],
   });

@@ -4,17 +4,21 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
 import {Repository} from '../models';
 import {RepositoryRepository} from '../repositories';
@@ -36,17 +40,21 @@ export class RepositoryController {
   async create(
     @requestBody({
       content: {
-        'application/json': {
-          schema: getModelSchemaRef(Repository, {
-            title: 'NewRepository',
-            exclude: ['id'],
-          }),
-        },
+        'application/json': {},
       },
     })
-    repository: Omit<Repository, 'id'>,
+    repository: any,
   ): Promise<Repository> {
-    return this.repositoryRepository.create(repository);
+    const tagIds = repository.tagIds
+
+    delete repository.tagIds
+    const repo: Repository = await this.repositoryRepository.create(repository);
+
+    for(const id of tagIds) {
+      await this.repositoryRepository.tags(repo.id).link(id)
+    }
+
+    return repo
   }
 
   @get('/repository/count', {

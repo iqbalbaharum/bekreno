@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
 
-@model({settings: {strict: false}})
+@model()
 export class Taging extends BaseEntity {
   @property({
     type: 'string',

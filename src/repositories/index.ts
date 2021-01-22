@@ -28,3 +28,5 @@ export * from './zone.repository';
 
 export * from './repository-note.repository';
 export * from './user-note.repository';
+export * from './tags.repository';
+export * from './taging.repository';

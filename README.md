@@ -10,7 +10,7 @@ Krenovator LMS (backend) is a collaborative learning platform.
 - [Installation](#installation)
 - [Configuration File](#configuration-file)
   - [Database](#database)
-  - [Storage](#storage)
+  - [Storage](#file-storage)
   - [SMTP - Simple Mail Transfer Protocol](#smtp)
 - [Database Migration](#database-migration)
 - [System Architecture]()
@@ -104,8 +104,41 @@ To reduce system complexity, the framework use cloud-based storage.
 **Reference**
 [Loopback-storage-components](https://loopback.io/doc/en/lb3/Storage-component.html)
 
-Below are the list of storage provider
+#### Using Cloud provider (AWS)
 
-- [AWS S3]()
+1. Go to [file.datasource.ts](), and **change** code for `const config` to below
+
+```js
+const config = {
+  name: 'File',
+  connector: 'loopback-component-storage',
+  provider: 'aws',
+  key: <AWS_KEY>,
+  keyId: <AWS_KEY_PROVIDER>,
+  nameConflict: 'makeUnique',
+  makeUnique: true,
+};
+```
+
+To get AWS_KEY you'll will need to register and go to [AWS Console](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html)
+
+#### Using Filesystem
+
+To change to to local storage follow step belows:
+
+1. In root, create a new folder named `storage`
+2. Change directory inside `./storage` and create another folder name similar as **STORAGE CONTAINER**
+3. Go to [file.datasource.ts](), and **change** code for `const config` to below
+
+```js
+const config = {
+  name: 'File',
+  connector: 'loopback-component-storage',
+  provider: 'filesystem',
+  root: './storage',
+};
+```
+
+4. Run application
 
 [Back to top](#documentation)

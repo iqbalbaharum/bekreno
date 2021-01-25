@@ -3,28 +3,31 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
   getWhereSchemaFor,
+  HttpErrors,
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {
-Repository,
-Taging,
-Tags,
+  Repository,
+
+  Tags
 } from '../models';
-import {RepositoryRepository} from '../repositories';
+import {RepositoryRepository, TagsRepository} from '../repositories';
+import {TagSchema} from '../schema';
 
 export class RepositoryTagsController {
   constructor(
     @repository(RepositoryRepository) protected repositoryRepository: RepositoryRepository,
+    @repository(TagsRepository) protected tagsRepository: TagsRepository,
   ) { }
 
   @get('/repositories/{id}/tags', {
@@ -59,15 +62,19 @@ export class RepositoryTagsController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Tags, {
-            title: 'NewTagsInRepository',
-            exclude: ['id'],
-          }),
+          schema: TagSchema,
         },
       },
-    }) tags: Omit<Tags, 'id'>,
-  ): Promise<Tags> {
-    return this.repositoryRepository.tags(id).create(tags);
+    }) parameter: {tagsId: string},
+  ): Promise<void> {
+
+    const tag = await this.tagsRepository.findById(parameter.tagsId)
+
+    if(!tag) {
+      throw new HttpErrors.UnprocessableEntity('Invalid tags id')
+    }
+
+    return  this.repositoryRepository.tags(id).link(tag.id)
   }
 
   @patch('/repositories/{id}/tags', {

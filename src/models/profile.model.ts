@@ -60,6 +60,12 @@ export class Profile extends BaseEntity {
   })
   avatar?: string;
 
+  @property({
+    type: 'boolean',
+    default: 0,
+    required: true
+  })
+  isCompleted: boolean;
 
   @belongsTo(() => User)
   userId?: string;

@@ -4,11 +4,11 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'File',
   connector: 'loopback-component-storage',
-  // provider: process.env.STORAGE_PROVIDER,
-  // key: process.env.STORAGE_PROVIDER_KEY,
-  // keyId: process.env.STORAGE_PROVIDER_KEY_ID,
-  provider: 'filesystem',
-  root: './storage',
+  provider: process.env.STORAGE_PROVIDER,
+  key: process.env.STORAGE_PROVIDER_KEY,
+  keyId: process.env.STORAGE_PROVIDER_KEY_ID,
+  // provider: 'filesystem',
+  // root: './storage',
   nameConflict: 'makeUnique',
   makeUnique: true
 };

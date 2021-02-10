@@ -33,3 +33,7 @@ export * from './repository-note.model';
 export * from './user-note.model';
 export * from './tags.model';
 export * from './taging.model';
+export * from './topic.model';
+export * from './topic-notes.model';
+export * from './topic-tags.model';
+export * from './topic-voter.model';

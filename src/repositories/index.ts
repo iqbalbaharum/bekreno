@@ -30,3 +30,7 @@ export * from './repository-note.repository';
 export * from './user-note.repository';
 export * from './tags.repository';
 export * from './taging.repository';
+export * from './topic.repository';
+export * from './topic-notes.repository';
+export * from './topic-tags.repository';
+export * from './topic-voter.repository';

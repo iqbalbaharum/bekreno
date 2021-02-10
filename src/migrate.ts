@@ -39,7 +39,11 @@ export async function migrate(args: string[]) {
       'ApplicationProject',
       'Tags',
       'Taging',
-      'Note'
+      'Note',
+      'Topic',
+      'TopicNotes',
+      'TopicTags',
+      'TopicVoter'
     ],
   });
 

@@ -10,21 +10,19 @@ import {
   get,
   getModelSchemaRef,
   getWhereSchemaFor,
+  HttpErrors,
   param,
   patch,
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  User,
-  Profile,
-} from '../models';
+import {Profile, User} from '../models';
 import {UserRepository} from '../repositories';
 
 export class UserProfileController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+  ) {}
 
   @get('/users/{id}/profile', {
     responses: {
@@ -45,6 +43,32 @@ export class UserProfileController {
     return this.userRepository.profile(id).get(filter);
   }
 
+  @get('/users/name/{username}/profile', {
+    responses: {
+      '200': {
+        description: 'User has one Profile',
+        content: {
+          'application/json': {
+            schema: getModelSchemaRef(Profile),
+          },
+        },
+      },
+    },
+  })
+  async getProfile(
+    @param.path.string('username') username: string,
+  ): Promise<Profile> {
+    const user = await this.userRepository.findOne({
+      where: {name: username},
+    });
+
+    if (!user) {
+      throw new HttpErrors.BadRequest('Username doesnt exists');
+    }
+
+    return user;
+  }
+
   @post('/users/{id}/profile', {
     responses: {
       '200': {
@@ -61,11 +85,12 @@ export class UserProfileController {
           schema: getModelSchemaRef(Profile, {
             title: 'NewProfileInUser',
             exclude: ['uuid'],
-            optional: ['userId']
+            optional: ['userId'],
           }),
         },
       },
-    }) profile: Omit<Profile, 'uuid'>,
+    })
+    profile: Omit<Profile, 'uuid'>,
   ): Promise<Profile> {
     return this.userRepository.profile(id).create(profile);
   }
@@ -88,7 +113,8 @@ export class UserProfileController {
       },
     })
     profile: Partial<Profile>,
-    @param.query.object('where', getWhereSchemaFor(Profile)) where?: Where<Profile>,
+    @param.query.object('where', getWhereSchemaFor(Profile))
+    where?: Where<Profile>,
   ): Promise<Count> {
     return this.userRepository.profile(id).patch(profile, where);
   }
@@ -103,7 +129,8 @@ export class UserProfileController {
   })
   async delete(
     @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(Profile)) where?: Where<Profile>,
+    @param.query.object('where', getWhereSchemaFor(Profile))
+    where?: Where<Profile>,
   ): Promise<Count> {
     return this.userRepository.profile(id).delete(where);
   }

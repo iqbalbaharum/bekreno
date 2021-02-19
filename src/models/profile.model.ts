@@ -45,8 +45,8 @@ export class Profile extends BaseEntity {
   @property({
     type: 'string',
     mysql: {
-      dataType: 'text'
-    }
+      dataType: 'text',
+    },
   })
   about?: string;
 
@@ -62,11 +62,9 @@ export class Profile extends BaseEntity {
 
   @property({
     type: 'boolean',
-   default: 0,
-   required: true
+    default: false,
   })
-  isCompleted: boolean;
-
+  completed?: boolean;
 
   @belongsTo(() => User)
   userId?: string;

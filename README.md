@@ -7,62 +7,42 @@ Krenovator LMS (backend) is a collaborative learning platform.
 ## Documentation
 
 - [System requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration File](#configuration-file)
-  - [Database](#database)
-  - [Storage](#file-storage)
-  - [SMTP - Simple Mail Transfer Protocol](#smtp)
+- [Setup Steps](#Setup-Steps)
+- [Database](#database)
+- [Storage](#file-storage)
+- [SMTP - Simple Mail Transfer Protocol](#smtp)
 - [Database Migration](#database-migration)
 - [System Architecture]()
 - [Troubleshooting](#)
 
 ## System Requirements
 
+Required to be installed:
+
 - [NodeJS v12 or higher](https://nodejs.org/en/)
 - [MySQL](https://dev.mysql.com/downloads/)
 - Code IDE - preferably [Visual Studio](https://code.visualstudio.com/), [Vim](https://www.vim.org/)
-- [IBM Loopbackframework - Version Loopback 4](https://loopback.io/doc/en/lb4/Concepts.html)
-- [AWS Cloud S3](https://aws.amazon.com/)
-- [SMTP Access](https://developers.google.com/gmail/imap/imap-smtp)
 
-## Installation
 
-1. `git clone`
-2. `npm ci`
+## Setup Steps
 
-[Back to top](#documentation)
-
-## Configuration File
-
-1. Create a file name `.env` file in root folder
-2. Copy the syntax from `.env-example` to `.env` and enter the information as below:
+1. Create new database in MySQL.
+2. Create a file name `.env` file in root folder
+3. Copy the syntax from `.env-example` to `.env` and enter the information for MYSQL Database as below:
 
 | Key                     | Description                                             | Example value                 |
 | ----------------------- | ------------------------------------------------------- | ----------------------------- |
-| NODE_ENV                | General code environment                                | `production` or `development` |
-| TOKEN_SECRET            | JWT hasing salt                                         | `mylocal`                     |
-| TOKEN_VALIDITY          | JWT Expiration in milliseconds                          | `21600`                       |
 | MYSQL_HOST              | Path to MYSQL instance                                  | `localhost`                   |
 | MYSQL_DB                | Name of the DB                                          | `obkreno`                     |
 | MYSQL_USERNAME          | username                                                | `root`                        |
 | MYSQL_PASSWORD          | password                                                | ` `                           |
-| SMTP_HOST               | Handle outgoing email [SMTP](#smtp)                     | `any@email.com`               |
-| SMTP_SECURE             | Handle outgoing email [SMTP](#smtp)                     | `true` @ `false`              |
-| SMTP_PORT               | Handle outgoing email [SMTP](#smtp)                     | `465`                         |
-| SMTP_USERNAME           | Handle outgoing email [SMTP](#smtp)                     | ` `                           |
-| SMTP_PASSWORD           | Handle outgoing email [SMTP](#smtp)                     | ` `                           |
-| OTP_ENABLE              | Enable OTP (one-time-password) login                    | `0` or `1`                    |
-| SMS_URL                 | If OTP_ENABLE=1, SMS provider detail (optional)         |                               |
-| SMS_API                 | If OTP_ENABLE=1, SMS Api Key (optional)                 |                               |
-| SMS_TAG                 | If OTP_ENABLE=1, SMS Tag (optional)                     |                               |
-| OTP_SECRET              | If OTP_ENABLE=1, OTP code generation secret (optional)  |                               |
-| OTP_VALIDITY            | Define how long the token will be valid in milliseconds |                               |
-| ONESIGNAL_APPID         | Optional, [OneSignal](https://onesignal.com/)           |                               |
-| ONESIGNAL_APPKEY        | Optional, [OneSignal](https://onesignal.com/)           |                               |
-| STORAGE_PROVIDER        | Optional, [Storage](#storage)                           | `aws`                         |
-| STORAGE_PROVIDER_KEY_ID | Optional, [Storage](#storage)                           |                               |
-| STORAGE_PROVIDER_KEY    | Optional, [Storage](#storage)                           |                               |
-| STORAGE CONTAINER       | Optional, [Storage](#storage)                           |                               |
+
+4. Run command `npm ci`
+5. Run command `npm run build`
+6. Run command `npm run migrate`
+7. Run command `npm start`
+
+[Back to top](#documentation)
 
 ## Database
 

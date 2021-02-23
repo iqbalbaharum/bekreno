@@ -24,7 +24,7 @@ Required to be installed:
 - Code IDE - preferably [Visual Studio](https://code.visualstudio.com/), [Vim](https://www.vim.org/)
 
 
-## Setup Steps
+## Installation Setup Steps
 
 1. Create new database in MySQL.
 2. Create a file name `.env` file in root folder
@@ -36,6 +36,10 @@ Required to be installed:
 | MYSQL_DB                | Name of the DB                                          | `obkreno`                     |
 | MYSQL_USERNAME          | username                                                | `root`                        |
 | MYSQL_PASSWORD          | password                                                | ` `                           |
+| STORAGE_PROVIDER        | Optional, [Storage](#storage)                           | `aws`                         |
+| STORAGE_PROVIDER_KEY_ID | Optional, [Storage](#storage)                           |                               |
+| STORAGE_PROVIDER_KEY    | Optional, [Storage](#storage)                           |                               |
+| STORAGE CONTAINER       | Optional, [Storage](#storage)                           |                               |
 
 4. Run command `npm ci`
 5. Run command `npm run build`

@@ -167,13 +167,11 @@ const config = {
 6.2 enter "quasar dev"
 
 
-===================================================
-    APPENDIX
-===================================================
-    ##for bekreno
-NODE_ENV=development
-URL=
 
+    APPENDIX
+
+    ##for bekreno
+```js
 # OTP
 OTP_ENABLE=0
 SMS_URL=
@@ -211,6 +209,9 @@ STORAGE_PROVIDER=amazon
 STORAGE_PROVIDER_KEY_ID=AKIAI5C2T4MV7PP7NGQQ
 STORAGE_PROVIDER_KEY=lM6LDMvnYtqIMPnXGTVhKFwGq1TCluEKecd4wdSv
 STORAGE_CONTAINER=krenolms
+
+```
+
 
 
     ##for fekreno

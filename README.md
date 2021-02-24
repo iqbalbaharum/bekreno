@@ -163,14 +163,14 @@ To configure LMS Krenovator
 4. Open MySQL Admin, create new database and name it "lms", press "create" button
 
 5. Open bekreno folder using CMD
-  5.1 enter "npm ci"
-  5.2 enter "npm run build"
-  5.3 enter "npm run migrate"
-  5.4 enter "npm start" 
+  6.1 enter "npm ci"
+  6.2 enter "npm run build"
+  6.3 enter "npm run migrate"
+  6.4 enter "npm start" 
 
 6. Open fekreno folder using CMD
-  6.1 enter "npm ci"
-  6.2 enter "quasar dev"
+  7.1 enter "npm ci"
+  7.2 enter "quasar dev"
 
 =========================================================================
         APPENDIX

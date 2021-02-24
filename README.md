@@ -144,3 +144,78 @@ const config = {
 [Back to top](#documentation)
 
 
+## To configure LMS KrenovatorFile Storage
+
+1. Using Git Bash
+1.1 git clone fekreno
+1.2 git clone bekreno
+
+2. Create new file ".env" in fekreno folder and bekreno folder (REFER APPENDIX)
+
+3. Run XAMPP
+
+4. Open MySQL Admin, create new database and name it "lms", press "create" button
+
+5. Open bekreno folder using CMD
+5.1 enter "npm ci"
+5.2 enter "npm run build"
+5.3 enter "npm run migrate"
+5.4 enter "npm start" 
+
+6. Open fekreno folder using CMD
+6.1 enter "npm ci"
+6.2 enter "quasar dev"
+
+
+===================================================
+    APPENDIX
+===================================================
+    ##for bekreno
+NODE_ENV=development
+URL=
+
+# OTP
+OTP_ENABLE=0
+SMS_URL=
+SMS_API=
+SMS_TAG=
+OTP_SECRET=
+
+# In milliseconds
+OTP_VALIDITY=18000
+
+# JWT Token
+TOKEN_SECRET=mylocal
+TOKEN_VALIDITY=21600
+
+# MYSQL Database
+MYSQL_HOST=localhost
+MYSQL_DB=lms
+MYSQL_USERNAME=root
+MYSQL_PASSWORD=
+
+#SMTP
+SMTP_HOST=any@email.com
+SMTP_SECURE=true
+SMTP_PORT=465
+SMTP_USERNAME=
+SMTP_PASSWORD=
+
+ONESIGNAL_APPID=
+ONESIGNAL_APPKEY=
+
+BILLPLZ_SECRET=
+
+# STORAGE PROVIDER
+STORAGE_PROVIDER=amazon
+STORAGE_PROVIDER_KEY_ID=AKIAI5C2T4MV7PP7NGQQ
+STORAGE_PROVIDER_KEY=lM6LDMvnYtqIMPnXGTVhKFwGq1TCluEKecd4wdSv
+STORAGE_CONTAINER=krenolms
+
+
+    ##for fekreno
+MAIN_BE_URL=http://localhost:3000
+MAIN_BE_TOKEN=jwt
+
+
+

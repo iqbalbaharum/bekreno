@@ -147,24 +147,24 @@ const config = {
 ## To configure LMS KrenovatorFile Storage
 
 1. Using Git Bash
-1.1 git clone fekreno
-1.2 git clone bekreno
+2. git clone fekreno
+3. git clone bekreno
 
-2. Create new file ".env" in fekreno folder and bekreno folder (REFER APPENDIX)
+4. Create new file ".env" in fekreno folder and bekreno folder (REFER APPENDIX)
 
-3. Run XAMPP
+5. Run XAMPP
 
-4. Open MySQL Admin, create new database and name it "lms", press "create" button
+6. Open MySQL Admin, create new database and name it "lms", press "create" button
 
-5. Open bekreno folder using CMD
-5.1 enter "npm ci"
-5.2 enter "npm run build"
-5.3 enter "npm run migrate"
-5.4 enter "npm start" 
+7. Open bekreno folder using CMD
+8. enter "npm ci"
+9. enter "npm run build"
+10. enter "npm run migrate"
+11. enter "npm start" 
 
-6. Open fekreno folder using CMD
-6.1 enter "npm ci"
-6.2 enter "quasar dev"
+12. Open fekreno folder using CMD
+13. enter "npm ci"
+14. enter "quasar dev"
 
 
 
@@ -213,10 +213,14 @@ STORAGE_CONTAINER=krenolms
 ```
 
 
-
     ##for fekreno
+```js
 MAIN_BE_URL=http://localhost:3000
 MAIN_BE_TOKEN=jwt
+
+```
+
+
 
 
 

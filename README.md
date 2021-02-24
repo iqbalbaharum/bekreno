@@ -144,7 +144,7 @@ const config = {
 [Back to top](#documentation)
 
 
-## To configure LMS KrenovatorFile Storage
+## To configure LMS Krenovator
 
 1. Using Git Bash
 2. git clone fekreno

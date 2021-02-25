@@ -140,5 +140,6 @@ const config = {
 ```
 
 4. Run application
+5. complete
 
 [Back to top](#documentation)

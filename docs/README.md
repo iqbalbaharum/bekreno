@@ -93,10 +93,10 @@ to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tuto
 3. For ## Storage Provider, you can use any cloud providers as well as your local file system.
    This is a place where data from the application will be saved.
 
-[1]: Using Local File System
-     1. In root of bekreno folder, create a folder named `storage`
-     2. In storage folder, create another folder named **STORAGE CONTAINER**
-     3. Go to [file.datasource.ts] and change code `const config` to these: 
+[1]: Using Local File System.
+   1. In root of bekreno folder, create a folder named `storage`.
+   2. In storage folder, create another folder named **STORAGE CONTAINER**.
+   3. Go to [file.datasource.ts] and change code `const config` to these: 
 
       ```js
          const config = {
@@ -107,7 +107,7 @@ to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tuto
          };
       ```
 [2]: Using Cloud Provider (AWS)
-     1. Go to [file.datasource.ts] and change code `const config` to these:
+   1. Go to [file.datasource.ts] and change code `const config` to these:
 
      ```js
          const config = {

@@ -7,8 +7,8 @@ Krenovator LMS is a project built by students of Krenovator. It is made to enhan
 the understanding of students in real project developed in production level.
 
 ## Framework
-Frontend - [Quasar framework](https://quasar.dev/).
-Backend - Node framework which is [IBM LoopBack Version 4](https://loopback.io/).
+   1. Frontend - [Quasar framework](https://quasar.dev/).
+   2. Backend - Node framework which is [IBM LoopBack Version 4](https://loopback.io/).
 
 ## Database
 Database used in this project: MySQL
@@ -23,7 +23,7 @@ Make sure you have all these installed first in your local machine:
 
 ## Friendly Reminder
 If you are a beginner in LoopBack framework or Quasar Framework, it is highly recommend for you 
-to do [this tutorial](https://loopback.io/doc/en/lb4/Tutorials.html) and [video tutorial for Quasar framework](https://quasar.dev/video-tutorials).
+to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tutorials.html) and [video tutorial for Quasar framework](https://quasar.dev/video-tutorials).
 
 ## Getting Started & Installation
 1. Open your github and fork these repos:
@@ -32,10 +32,9 @@ to do [this tutorial](https://loopback.io/doc/en/lb4/Tutorials.html) and [video 
 
 2. Create new folder and open git bash
 
-3. Copy link of the repos in your github. Make sure your directory is correct
-   then insert this command without the open and close tag.
-   Command: *git clone <link-of-the-repos>*.
-   Example path: C:\Users\nasuha\Desktop\proKreno>
+3. Copy link of the repos in your github. Make sure your directory is correct then insert this command with the link of repo.
+   - Command: *git clone link-of-repo*.
+   - Example path: C:\Users\nasuha\Desktop\proKreno>
 
 ## Bekreno Installation
 1. Open terminal and go to bekreno folder.
@@ -43,20 +42,19 @@ to do [this tutorial](https://loopback.io/doc/en/lb4/Tutorials.html) and [video 
 
 2. Setup the .env file. Env file is a file used to define some variables according to the application's environment.
    - Refer ## Configuration File
-
-   For more information about .env file, you can refer here <https://www.freecodecamp.org/news/nodejs-custom-env-files-in-your-apps-fa7b3e67abe1/>
+   - For more information about .env file, you can refer here <https://www.freecodecamp.org/news/nodejs-custom-env-files-in-your-apps-fa7b3e67abe1/>
 
 3. Install all dependencies at backend.
-   Command: *npm ci*
+   - Command: *npm ci*
 
 4. Create database in Xampp/Laragon. Make sure db name same as in the .env file.
-   *Xampp/Laragon is a web server that helps developers to test the application locally in our machine*.
+   - *Xampp/Laragon is a web server that helps developers to test the application locally in our machine*.
 
 5. Setup database.
-   Command: *npm run build*
+   - Command: *npm run build*
 
 6. Migrate database into your local machine - it will create all tables needed in our newly created database.
-   Command: *npm run migrate*
+   - Command: *npm run migrate*
    
 7. To run the backend: *npm start*
 

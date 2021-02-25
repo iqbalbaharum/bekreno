@@ -27,8 +27,61 @@ Krenovator LMS (backend) is a collaborative learning platform.
 
 ## Installation
 
-1. `git clone`
-2. `npm ci`
+Update by Farhana
+
+(If you are new to Mac OS, you can follow this installation step by step.)
+
+###Cloning repository into local folder.
+
+1. Install Homebrew (recommended) into your Mac OS (refer to this link : https://brew.sh)
+2. Now, you need to download Git bash with Homebrew. Simply by running this command in your terminal : 
+
+``````````````````
+$ brew install git
+``````````````````
+
+3. To clone, run this command on your terminal : 
+
+``````````````````````````````````````````````
+cd [folder_name] - set directory folder
+git clone [copied repository url from git hub]
+``````````````````````````````````````````````
+
+4. The file that you cloned should be in the local folder.
+
+###Installing visual studio code
+
+1. Refer to https://code.visualstudio.com/docs/setup/mac.
+
+###Installing node.js
+
+1. Run this command on terminal :
+
+`````````````````
+brew install node
+`````````````````
+
+###Installing MySQL
+
+1. Run this command on terminal : 
+
+``````````````````
+brew install mysql
+``````````````````
+
+2. Create new connection for local database. 
+3. I installed Tableplus (free and good for a start) for database interface. Connect Tableplus with MySQL.
+4. Create new database for this project.
+5. Refer to https://flaviocopes.com/mysql-how-to-install/ and https://docs.tableplus.com.
+
+###Installing npm
+
+1. Run this command on terminal : 
+
+`````````````````
+cd [folder_name]
+npm ci
+`````````````````
 
 [Back to top](#documentation)
 

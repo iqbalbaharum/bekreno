@@ -27,8 +27,9 @@ Krenovator LMS (backend) is a collaborative learning platform.
 
 ## Installation
 
-1. `git clone`
-2. `npm ci`
+1. `git clone` (Makes a copy of the Git repository to a newly created directory)
+2. `cd bekreno` (Changes directory to the newly created folder)
+3. `npm ci` (Installs dependencies directly from `package-lock.json`)
 
 [Back to top](#documentation)
 
@@ -142,3 +143,28 @@ const config = {
 4. Run application
 
 [Back to top](#documentation)
+
+## MacOS Installation
+
+1. Install [Homebrew](https://brew.sh/)
+2. Install Git via Homebrew `$brew install git`
+3. Follow steps from [Installation](#installation)
+
+### NodeJS Installation
+Install NodeJS via Homebrew:
+
+```
+$brew install node
+```
+
+### XAMPP Installation
+1. Go to [XAMPP](https://www.apachefriends.org/download.html) web page.
+2. Scroll to 'XAMPP for MacOS' and click on 'More Downloads >>'
+3. Click on 'XAMPP Mac OS X' folder.
+4. Choose the version you want to install.
+5. Download the file with '-installer.dmg' extension (NOT '-vm.dmg').
+6. Follow the steps of the installation wizard.
+7. Go to your browser and run [PHPMyAdmin](http://localhost/phpmyadmin).
+8. Create a new database named "krenolms".
+9. Follow steps from [Database Migration](#databasemigration) to migrate database.
+

@@ -27,8 +27,16 @@ Krenovator LMS (backend) is a collaborative learning platform.
 
 ## Installation
 
-1. `git clone`
-2. `npm ci`
+1. Create project folder in desired location.
+2. Clone the repository into the folder using git bash. 
+    - Run `git clone` in the bash terminal following by the url of the projects
+      > bekreno : https://github.com/iqbalbaharum/bekreno.git
+      > fekreno : https://github.com/iqbalbaharum/fekreno.git
+
+3. Once completed, run the terminal in IDE and run command `npm ci` for fresh installation of the project. 
+  - Make sure to install both frontend and backend
+  - Use command `cd` to change directory of folder
+  - Use `npm install`' to update any changes
 
 [Back to top](#documentation)
 
@@ -68,6 +76,14 @@ Krenovator LMS (backend) is a collaborative learning platform.
 
 Database: MySQL
 
+1. Steps to install MySQL =
+
+    https://docs.google.com/presentation/d/1dGspZqbCUSUvaVbd5zx8zZe7JgPj7919v6gVsSMhuoE/edit#slide=id.p
+
+2. Run MySQL
+
+3. Create a new database/schemas for the project. 
+
 The model is built with SQL-query in mind. To change it, u need to update the datasource.
 
 [Back to top](#documentation)
@@ -90,10 +106,12 @@ https://loopback.io/doc/en/lb4/Database-migrations.html
 
 **Run migration**
 
-```
-npm run build
-npm run migrate
-```
+1. Run the following command
+
+  `npm run build`
+  `npm run migrate`
+
+2. Check the database to make sure the migration successfully completed.
 
 [Back to top](#documentation)
 
@@ -139,6 +157,8 @@ const config = {
 };
 ```
 
-4. Run application
+
+#### Run Application
+1. Use command `npm start` to start running backend
 
 [Back to top](#documentation)

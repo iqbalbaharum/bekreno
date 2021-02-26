@@ -58,6 +58,10 @@ to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tuto
    
 7. To run the backend: *npm start*
 
+8. Result:
+
+![Backend Interface](/images/backend.png "Backend Interface")
+
 ## Configuration File
 
 1. Create a file name `.env` file in root folder.
@@ -121,5 +125,7 @@ to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tuto
          };
       ```
 ## Side Note
-Please ensure # Storage Provider and # MYSQL Database have values in .env file.
+1. Please ensure # MYSQL Database have values in .env file.
+2. Please ensure # Storage Provider has key values. If you're using local file system, 
+   please ensure you have config the file accordingly.
 

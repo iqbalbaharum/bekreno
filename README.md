@@ -166,5 +166,5 @@ $brew install node
 6. Follow the steps of the installation wizard.
 7. Go to your browser and run [PHPMyAdmin](http://localhost/phpmyadmin).
 8. Create a new database named "krenolms".
-9. Follow steps from [Database Migration](#databasemigration) to migrate database.
+9. Follow steps from [Database Migration](#database-migration) to migrate database.
 

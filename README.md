@@ -41,6 +41,13 @@ Krenovator LMS (backend) is a collaborative learning platform.
 12.open file eny example copy and paste to .env
 13.find in .env file mysql databased
 14. copy MYSQL_DB=krenolms
+15. open laragon create new lmskreno
+16. ctrl+shift for new terminal
+17. insert command :cd bekreno
+18. insert command : npm ci
+19. wait for running until complete
+20. insert command npm run build
+21. insert commadn npm run migrate
 
 [Back to top](#documentation)
 

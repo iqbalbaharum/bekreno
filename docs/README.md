@@ -60,7 +60,7 @@ to do [this tutorial for LoopBack framework](https://loopback.io/doc/en/lb4/Tuto
 
 8. Result:
 
-![Backend Interface](/images/backend.png "Backend Interface")
+![Backend Interface](/images/backend.jpg "Backend Interface")
 
 ## Configuration File
 

@@ -2,7 +2,7 @@
 
 ### Introduction
 
-Krenovator LMS (backend) is a collaborative learning platform.
+Krenovator LMS (backend) is a collaborative learning platform using IBM loopback framework and NodeJS
 
 ## Documentation
 
@@ -31,10 +31,9 @@ Krenovator LMS (backend) is a collaborative learning platform.
 2. Clone the repository into the folder using git bash. 
     - Run `git clone` in the bash terminal following by the url of the projects
       > bekreno : https://github.com/iqbalbaharum/bekreno.git
-      > fekreno : https://github.com/iqbalbaharum/fekreno.git
+    
 
 3. Once completed, run the terminal in IDE and run command `npm ci` for fresh installation of the project. 
-  - Make sure to install both frontend and backend
   - Use command `cd` to change directory of folder
   - Use `npm install`' to update any changes
 

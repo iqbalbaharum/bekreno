@@ -34,8 +34,7 @@ Krenovator LMS (backend) is a collaborative learning platform using IBM loopback
     
 
 3. Once completed, run the terminal in IDE and run command `npm ci` for fresh installation of the project. 
-  - Use command `cd` to change directory of folder
-  - Use `npm install`' to update any changes
+  - Use command `cd` to change directory of folder if needed to
 
 [Back to top](#documentation)
 

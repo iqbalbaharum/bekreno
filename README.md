@@ -13,8 +13,8 @@ Krenovator LMS (backend) is a collaborative learning platform.
   - [Storage](#file-storage)
   - [SMTP - Simple Mail Transfer Protocol](#smtp)
 - [Database Migration](#database-migration)
-- [System Architecture]()
-- [Troubleshooting](#)
+- [File Storage](#file-storage)
+- [MacOS Installation](#macos-installation)
 
 ## System Requirements
 
@@ -167,4 +167,6 @@ $brew install node
 7. Go to your browser and run [PHPMyAdmin](http://localhost/phpmyadmin).
 8. Create a new database named "krenolms".
 9. Follow steps from [Database Migration](#database-migration) to migrate database.
+
+[Back to top](#documentation)
 

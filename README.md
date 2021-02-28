@@ -4,6 +4,7 @@
 
 Quick overview about BEkreno is a backend system using Loopback framework from IBM and using Typescript for development
 
+![logo](https://github.com/aktaktaw/bekreno/blob/master/docs/img/bekreno-models.jpg)
 
 ## Documentation
 

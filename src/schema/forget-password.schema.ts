@@ -11,3 +11,13 @@ export const ForgetPasswordSchema = {
     },
   },
 };
+
+
+export const EmailPasswordSchema = {
+  type: 'object',
+  properties: {
+      email: {
+          type: 'string'
+      }
+  }
+}

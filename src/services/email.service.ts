@@ -77,11 +77,12 @@ export class EmailService {
     const email = new Email({
       to: to,
       subject: bodyContent.subject,
-      content: template,
+      content: body
     });
 
     return this.sendMail(email)
   }
+
 
   async sendEmailRaw(content: string, subject: string, to: string) : Promise<Object> {
     const email = new Email({

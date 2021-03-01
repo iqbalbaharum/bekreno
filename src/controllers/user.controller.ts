@@ -27,6 +27,7 @@ import {
   RestBindings
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
+import { Console } from 'console';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
@@ -44,9 +45,9 @@ import {
   UserRepository
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
-import {ForgetPasswordSchema} from '../schema/forget-password.schema';
+import {ForgetPasswordSchema, EmailPasswordSchema} from '../schema/forget-password.schema';
 import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
-import {ForgetPassword, OTPCredential} from '../types';
+import {ForgetPassword, OTPCredential,EmailPassword} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
 
@@ -462,7 +463,7 @@ export class UserController {
     return this.userRepository.findById(user.user);
   }
 
-  @get('/user/forget/email/{email}', {
+  @post('/user/forget/email', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -470,11 +471,20 @@ export class UserController {
     },
   })
   async forgetPasswordByEmail(
-    @param.path.string('email') userEmail: string,
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded' : {
+          schema: EmailPasswordSchema
+        }
+      }
+    })
+    userEmail: EmailPassword
+
   ): Promise<{result: Boolean}> {
     let bRetCode = false;
     const userExisted = await this.userRepository.findOne({
-      where: {email: userEmail},
+      where: {email: userEmail.email},
     });
 
     if (!userExisted) {
@@ -484,6 +494,8 @@ export class UserController {
     }
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
+    
+    console.log(token);
 
     await this.emailService.sendEmailFromTemplate('PASSWORDRESET', { name: userExisted.name, token: token }, userExisted.email);
 

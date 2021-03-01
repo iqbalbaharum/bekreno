@@ -25,6 +25,9 @@ export class Topic extends BaseEntity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text',
+    },
   })
   description?: string;
 

@@ -1,25 +1,36 @@
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, param,
-  patch, post,
+  del,
+  get,
+  getModelSchemaRef,
+  HttpErrors,
+  param,
+  patch,
+  post,
   put,
-  requestBody
+  requestBody,
 } from '@loopback/rest';
-import {Topic, User} from '../models';
-import {TopicRepository} from '../repositories';
+import {MyUserProfile} from '../components/jwt-authentication/types';
+import {DtoTopic, Topic, User} from '../models';
+import {TagsRepository, TopicRepository} from '../repositories';
 
 export class TopicController {
   constructor(
     @repository(TopicRepository)
-    public topicRepository : TopicRepository,
+    public topicRepository: TopicRepository,
+    @repository(TagsRepository)
+    public tagsRepository: TagsRepository,
+    @inject.getter(AuthenticationBindings.CURRENT_USER)
+    public getCurrentUser: Getter<MyUserProfile>,
   ) {}
 
   @post('/topics', {
@@ -30,20 +41,37 @@ export class TopicController {
       },
     },
   })
+  @authenticate('jwt')
   async create(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Topic, {
-            title: 'NewTopic',
-            exclude: ['id'],
-          }),
+          schema: getModelSchemaRef(DtoTopic),
         },
       },
     })
-    topic: Omit<Topic, 'id'>,
+    topic: Omit<DtoTopic, 'id'>,
   ): Promise<Topic> {
-    return this.topicRepository.create(topic);
+    const user = await this.getCurrentUser();
+
+    for (const tagId of topic.tagIds) {
+      const tag = await this.tagsRepository.findById(tagId);
+      if (!tag) {
+        throw new HttpErrors.BadRequest(`Invalid Tag Ids - ${tagId} `);
+      }
+    }
+
+    const newTopic = await this.topicRepository.create({
+      title: topic.title,
+      description: topic.description,
+      userId: user.user,
+    });
+
+    for (const tagId of topic.tagIds) {
+      await this.topicRepository.tags(newTopic.id).link(tagId);
+    }
+
+    return newTopic;
   }
 
   @get('/topics/count', {
@@ -54,9 +82,7 @@ export class TopicController {
       },
     },
   })
-  async count(
-    @param.where(Topic) where?: Where<Topic>,
-  ): Promise<Count> {
+  async count(@param.where(Topic) where?: Where<Topic>): Promise<Count> {
     return this.topicRepository.count(where);
   }
 
@@ -75,9 +101,7 @@ export class TopicController {
       },
     },
   })
-  async find(
-    @param.filter(Topic) filter?: Filter<Topic>,
-  ): Promise<Topic[]> {
+  async find(@param.filter(Topic) filter?: Filter<Topic>): Promise<Topic[]> {
     return this.topicRepository.find(filter);
   }
 
@@ -117,7 +141,8 @@ export class TopicController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Topic, {exclude: 'where'}) filter?: FilterExcludingWhere<Topic>
+    @param.filter(Topic, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Topic>,
   ): Promise<Topic> {
     return this.topicRepository.findById(id, filter);
   }

@@ -13,16 +13,11 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param,
-
-
-  patch, post,
-
-
-
-
+  getModelSchemaRef,
+  param,
+  patch,
+  post,
   put,
-
   requestBody
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
@@ -158,19 +153,19 @@ export class JournalController {
     journal: Journal,
   ): Promise<void> {
     const userProfile = await this.getCurrentUser();
-    //console.log(userProfile.roles)
-    let roles = userProfile.roles
-    console.log(roles)
-    if(roles.findIndex('admin'))
+    //console.log(userProfile.roles);
+    let roles = userProfile.roles.findIndex((x: {roles: string;}) => x.roles === 'admin')
+    if(roles === 1)
     {
-      console.log(userProfile.roles)
       journal.status = 2 //Admin reviewed the journal
+      await this.journalRepository.replaceById(id, journal);
     }
     else
     {
       journal.status = 1 //User edit the journal
+      await this.journalRepository.replaceById(id, journal);
     }
-    await this.journalRepository.replaceById(id, journal);
+    //await this.journalRepository.replaceById(id, journal);
   }
 
   @put('/journal/{id}', {
@@ -193,8 +188,16 @@ export class JournalController {
   ): Promise<void> {
     const userProfile = await this.getCurrentUser();
 
-    let roles = userProfile.roles
-    if(roles.findIndex('admin'))
+    //let profile = userProfile.role.find(userProfile => userProfile.role === 'admin')
+
+
+    /*
+      let user = Users.find((user:any)=>user.id === query)
+
+    */
+
+
+    /*if(userProfile.roles.findIndex(e=> e==='admin'))
     {
       journal.status = 2 //Admin reviewed the journal
     }
@@ -202,6 +205,8 @@ export class JournalController {
     {
       journal.status = 1 //User edit the journal
     }
+    */
+
     await this.journalRepository.replaceById(id, journal);
   }
 

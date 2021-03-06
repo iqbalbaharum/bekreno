@@ -1,8 +1,8 @@
-import {belongsTo, model, property, hasMany} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
 import {BaseEntity} from '.';
+import {Comment} from './comment.model';
 import {Project} from './project.model';
 import {User} from './user.model';
-import {Comment} from './comment.model';
 
 @model()
 export class Journal extends BaseEntity {
@@ -29,11 +29,17 @@ export class Journal extends BaseEntity {
   })
   detail: string;
 
-  @property({
+  /*@property({
     type: 'string',
     default: 'new',
   })
   status: string;
+  */
+ @property({
+  type: 'number',
+  default: 0,
+  })
+  status: number;
 
   @belongsTo(() => Project)
   projectId: string;

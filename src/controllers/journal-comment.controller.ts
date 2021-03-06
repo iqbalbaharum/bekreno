@@ -3,7 +3,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -13,7 +13,7 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {Comment, Journal} from '../models';
 import {JournalRepository} from '../repositories';
@@ -60,12 +60,14 @@ export class JournalCommentController {
             title: 'NewCommentInJournal',
             exclude: ['id'],
             optional: ['journalId'],
+
           }),
         },
       },
     })
     comment: Omit<Comment, 'id'>,
   ): Promise<Comment> {
+
     return this.journalRepository.comments(id).create(comment);
   }
 

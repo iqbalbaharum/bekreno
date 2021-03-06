@@ -1,21 +1,31 @@
 import {
+  authenticate,
+  AuthenticationBindings
+} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/core';
+import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {UserProfile} from '@loopback/security';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
 
@@ -23,6 +33,8 @@ export class JournalController {
   constructor(
     @repository(JournalRepository)
     public journalRepository : JournalRepository,
+    @inject.getter(AuthenticationBindings.CURRENT_USER)
+    public getCurrentUser: Getter<UserProfile>,
   ) {}
 
   @post('/journal', {
@@ -46,6 +58,7 @@ export class JournalController {
     })
     journal: Omit<Journal, 'id'>,
   ): Promise<Journal> {
+    journal.status = 0
     return this.journalRepository.create(journal);
   }
 
@@ -132,6 +145,7 @@ export class JournalController {
       },
     },
   })
+  @authenticate('jwt')
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -143,7 +157,20 @@ export class JournalController {
     })
     journal: Journal,
   ): Promise<void> {
-    await this.journalRepository.updateById(id, journal);
+    const userProfile = await this.getCurrentUser();
+    //console.log(userProfile.roles)
+    let roles = userProfile.roles
+    console.log(roles)
+    if(roles.findIndex('admin'))
+    {
+      console.log(userProfile.roles)
+      journal.status = 2 //Admin reviewed the journal
+    }
+    else
+    {
+      journal.status = 1 //User edit the journal
+    }
+    await this.journalRepository.replaceById(id, journal);
   }
 
   @put('/journal/{id}', {
@@ -153,10 +180,28 @@ export class JournalController {
       },
     },
   })
+  @authenticate('jwt')
   async replaceById(
     @param.path.string('id') id: string,
-    @requestBody() journal: Journal,
+    @requestBody({
+      'application/json':{
+        schema: getModelSchemaRef(Journal)
+      }
+    })
+    journal: Journal,
+
   ): Promise<void> {
+    const userProfile = await this.getCurrentUser();
+
+    let roles = userProfile.roles
+    if(roles.findIndex('admin'))
+    {
+      journal.status = 2 //Admin reviewed the journal
+    }
+    else
+    {
+      journal.status = 1 //User edit the journal
+    }
     await this.journalRepository.replaceById(id, journal);
   }
 

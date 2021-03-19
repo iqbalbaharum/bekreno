@@ -29,4 +29,16 @@ export class JournalRepository extends DefaultCrudRepository<
     this.project = this.createBelongsToAccessorFor('project', projectRepositoryGetter,);
     this.registerInclusionResolver('project', this.project.inclusionResolver);
   }
+
+  async findUnreviewedJournal(): Promise<Journal[]> {
+    return await this.find({
+      where: {
+        or: [
+          { status: 'new' },
+          { status: 'updated' },
+          { status: 'discuss' }
+        ]
+      }
+    });
+  }
 }

@@ -16,6 +16,12 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
+import {Getter, inject} from '@loopback/core';
+import {
+  authenticate,
+  AuthenticationBindings
+} from '@loopback/authentication';
+import {UserProfile} from '@loopback/security';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
 
@@ -23,6 +29,8 @@ export class JournalController {
   constructor(
     @repository(JournalRepository)
     public journalRepository : JournalRepository,
+    @inject.getter(AuthenticationBindings.CURRENT_USER)
+    public getCurrentUser: Getter<UserProfile>,
   ) {}
 
   @post('/journal', {
@@ -78,10 +86,27 @@ export class JournalController {
       },
     },
   })
-  async find(
-    @param.filter(Journal) filter?: Filter<Journal>,
-  ): Promise<Journal[]> {
-    return this.journalRepository.find(filter);
+  async findUnreviewedJournal(): Promise<Journal[]> {
+    return this.journalRepository.findUnreviewedJournal();
+  }
+
+  @get('/journal/all', {
+    responses: {
+      '200': {
+        description: 'Array of Journal model instances',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: getModelSchemaRef(Journal, {includeRelations: true}),
+            },
+          },
+        },
+      },
+    },
+  })
+  async find(): Promise<Journal[]> {
+    return this.journalRepository.find();
   }
 
   @patch('/journal', {
@@ -132,6 +157,7 @@ export class JournalController {
       },
     },
   })
+  @authenticate('jwt')
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -143,7 +169,14 @@ export class JournalController {
     })
     journal: Journal,
   ): Promise<void> {
-    await this.journalRepository.updateById(id, journal);
+    const currentUser = await this.getCurrentUser();
+
+    if (currentUser.roles.includes('cohort')) {
+      journal.status = 'updated';
+      await this.journalRepository.updateById(id, journal);
+    } else {
+      await this.journalRepository.updateById(id, journal);
+    }
   }
 
   @put('/journal/{id}', {

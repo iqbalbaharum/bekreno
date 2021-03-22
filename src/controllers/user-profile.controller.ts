@@ -3,7 +3,7 @@ import {
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -14,7 +14,7 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {Profile, User} from '../models';
 import {UserRepository} from '../repositories';
@@ -60,6 +60,9 @@ export class UserProfileController {
   ): Promise<Profile> {
     const user = await this.userRepository.findOne({
       where: {name: username},
+      include: [
+        { relation: 'profile' }
+      ]
     });
 
     if (!user) {

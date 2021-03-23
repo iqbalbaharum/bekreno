@@ -143,7 +143,8 @@ export class JournalController {
     })
     journal: Journal,
   ): Promise<void> {
-      
+
+    journal.status="updated";
     await this.journalRepository.updateById(id, journal);
   }
 

@@ -5,11 +5,12 @@ import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
   RestExplorerBindings,
-  RestExplorerComponent,
+  RestExplorerComponent
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import * as dotenv from 'dotenv';
 import path from 'path';
+import {BasicAuthorizationComponent} from './components/authorization';
 import {JWTAuthenticationComponent} from './components/jwt-authentication';
 import {SECURITY_SCHEME_SPEC} from './components/jwt-authentication/services';
 import {MySequence} from './sequence';
@@ -39,6 +40,7 @@ export class BalJsApplication extends BootMixin(
     this.component(RestExplorerComponent);
     this.component(AuthenticationComponent);
     this.component(JWTAuthenticationComponent);
+    this.component(BasicAuthorizationComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

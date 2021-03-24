@@ -1,27 +1,33 @@
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
-import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-} from '@loopback/rest';
-import {Getter, inject} from '@loopback/core';
-import {
   authenticate,
   AuthenticationBindings
 } from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {Getter, inject} from '@loopback/core';
+import {
+  Count,
+  CountSchema,
+
+  FilterExcludingWhere,
+  repository,
+  Where
+} from '@loopback/repository';
+import {
+  del, get,
+  getModelSchemaRef, HttpErrors, param,
+
+
+  patch, post,
+
+
+
+
+  put,
+
+  requestBody
+} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
+import {JournalAcl} from '../acl';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
 
@@ -41,6 +47,8 @@ export class JournalController {
       },
     },
   })
+  @authenticate('jwt')
+  @authorize(JournalAcl['create-journal'])
   async create(
     @requestBody({
       content: {
@@ -54,6 +62,10 @@ export class JournalController {
     })
     journal: Omit<Journal, 'id'>,
   ): Promise<Journal> {
+    const currentUser = await this.getCurrentUser()
+
+    journal.userId = currentUser.user
+    journal.status = 'new'
     return this.journalRepository.create(journal);
   }
 
@@ -109,28 +121,6 @@ export class JournalController {
     return this.journalRepository.find();
   }
 
-  @patch('/journal', {
-    responses: {
-      '200': {
-        description: 'Journal PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Journal, {partial: true}),
-        },
-      },
-    })
-    journal: Journal,
-    @param.where(Journal) where?: Where<Journal>,
-  ): Promise<Count> {
-    return this.journalRepository.updateAll(journal, where);
-  }
-
   @get('/journal/{id}', {
     responses: {
       '200': {
@@ -158,6 +148,7 @@ export class JournalController {
     },
   })
   @authenticate('jwt')
+  @authorize(JournalAcl['update-journal'])
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -169,14 +160,8 @@ export class JournalController {
     })
     journal: Journal,
   ): Promise<void> {
-    const currentUser = await this.getCurrentUser();
-
-    if (currentUser.roles.includes('cohort')) {
-      journal.status = 'updated';
-      await this.journalRepository.updateById(id, journal);
-    } else {
-      await this.journalRepository.updateById(id, journal);
-    }
+    journal.status = 'updated';
+    await this.journalRepository.updateById(id, journal);
   }
 
   @put('/journal/{id}', {
@@ -202,5 +187,55 @@ export class JournalController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.journalRepository.deleteById(id);
+  }
+
+  @post('/journal/{id}/reviewed', {
+    responses: {
+      '200': {
+        description: 'update journal status',
+        content: {'application/json': {schema: getModelSchemaRef(Journal)}},
+      },
+    },
+  })
+  @authenticate('jwt')
+  @authorize(JournalAcl['change-status'])
+  async journalReviewed(
+    @param.path.string('id') id: string
+  ): Promise<void> {
+
+    const journal = await this.journalRepository.findById(id)
+
+    if(!journal) {
+      throw new HttpErrors.BadRequest('Journal doesnt exists')
+    }
+
+    journal.status = 'review'
+    journal.updatedAt = new Date()
+    await this.journalRepository.updateById(id, journal);
+  }
+
+  @post('/journal/{id}/discuss', {
+    responses: {
+      '200': {
+        description: 'update journal status',
+        content: {'application/json': {schema: getModelSchemaRef(Journal)}},
+      },
+    },
+  })
+  @authenticate('jwt')
+  @authorize(JournalAcl['change-status'])
+  async journalNeedDiscussion(
+    @param.path.string('id') id: string
+  ): Promise<void> {
+
+    const journal = await this.journalRepository.findById(id)
+
+    if(!journal) {
+      throw new HttpErrors.BadRequest('Journal doesnt exists')
+    }
+
+    journal.status = 'discuss'
+
+    await this.journalRepository.updateById(id, journal);
   }
 }

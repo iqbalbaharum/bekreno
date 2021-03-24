@@ -3,10 +3,12 @@ export const JournalAcl = {
     allowedRoles: ['cohort'],
   },
   'update-journal': {
-    allowedRoles: ['cohort']
+    allowedRoles: ['cohort'],
   },
   'change-status': {
-    allowedRoles: ['admin']
-  }
- }
-
+    allowedRoles: ['admin'],
+  },
+  'add-comment': {
+    allowedRoles: ['cohort', 'admin'],
+  },
+};

@@ -1,3 +1,5 @@
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 import {
   Count,
   CountSchema,
@@ -10,14 +12,17 @@ import {
   get,
   getModelSchemaRef,
   getWhereSchemaFor,
+  HttpErrors,
   param,
   patch,
   post,
   requestBody,
 } from '@loopback/rest';
+import {JournalAcl} from '../acl';
 import {Comment, Journal} from '../models';
 import {JournalRepository} from '../repositories';
 
+@authenticate('jwt')
 export class JournalCommentController {
   constructor(
     @repository(JournalRepository)
@@ -51,6 +56,7 @@ export class JournalCommentController {
       },
     },
   })
+  @authorize(JournalAcl['add-comment'])
   async create(
     @param.path.string('id') id: typeof Journal.prototype.id,
     @requestBody({
@@ -66,7 +72,26 @@ export class JournalCommentController {
     })
     comment: Omit<Comment, 'id'>,
   ): Promise<Comment> {
-    return this.journalRepository.comments(id).create(comment);
+    const journal = await this.journalRepository.findById(id);
+
+    if (!journal) {
+      throw new HttpErrors.BadRequest('Invalid journal');
+    }
+
+    const commentCreated = await this.journalRepository
+      .comments(id)
+      .create(comment);
+
+    if (!commentCreated) {
+      throw new HttpErrors.BadRequest('Invalid comment');
+    }
+
+    journal.status = 'updated';
+    journal.updatedAt = new Date();
+
+    await this.journalRepository.updateById(journal.id, journal);
+
+    return commentCreated;
   }
 
   @patch('/journal/{id}/comments', {

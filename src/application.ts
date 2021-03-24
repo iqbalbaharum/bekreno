@@ -1,11 +1,12 @@
 import {AuthenticationComponent} from '@loopback/authentication';
+import {AuthorizationComponent} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
   RestExplorerBindings,
-  RestExplorerComponent
+  RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import * as dotenv from 'dotenv';
@@ -37,8 +38,10 @@ export class BalJsApplication extends BootMixin(
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
+
     this.component(RestExplorerComponent);
     this.component(AuthenticationComponent);
+    this.component(AuthorizationComponent);
     this.component(JWTAuthenticationComponent);
     this.component(BasicAuthorizationComponent);
 

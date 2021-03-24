@@ -1,40 +1,33 @@
-import {
-  authenticate,
-  AuthenticationBindings
-} from '@loopback/authentication';
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {Getter, inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
-
   FilterExcludingWhere,
   repository,
-  Where
+  Where,
 } from '@loopback/repository';
 import {
-  del, get,
-  getModelSchemaRef, HttpErrors, param,
-
-
-  patch, post,
-
-
-
-
-  put,
-
-  requestBody
+  del,
+  get,
+  getModelSchemaRef,
+  HttpErrors,
+  param,
+  patch,
+  post,
+  requestBody,
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import {JournalAcl} from '../acl';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
 
+@authenticate('jwt')
 export class JournalController {
   constructor(
     @repository(JournalRepository)
-    public journalRepository : JournalRepository,
+    public journalRepository: JournalRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<UserProfile>,
   ) {}
@@ -47,7 +40,6 @@ export class JournalController {
       },
     },
   })
-  @authenticate('jwt')
   @authorize(JournalAcl['create-journal'])
   async create(
     @requestBody({
@@ -62,10 +54,10 @@ export class JournalController {
     })
     journal: Omit<Journal, 'id'>,
   ): Promise<Journal> {
-    const currentUser = await this.getCurrentUser()
+    const currentUser = await this.getCurrentUser();
 
-    journal.userId = currentUser.user
-    journal.status = 'new'
+    journal.userId = currentUser.user;
+    journal.status = 'new';
     return this.journalRepository.create(journal);
   }
 
@@ -77,9 +69,7 @@ export class JournalController {
       },
     },
   })
-  async count(
-    @param.where(Journal) where?: Where<Journal>,
-  ): Promise<Count> {
+  async count(@param.where(Journal) where?: Where<Journal>): Promise<Count> {
     return this.journalRepository.count(where);
   }
 
@@ -135,7 +125,8 @@ export class JournalController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Journal, {exclude: 'where'}) filter?: FilterExcludingWhere<Journal>
+    @param.filter(Journal, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Journal>,
   ): Promise<Journal> {
     return this.journalRepository.findById(id, filter);
   }
@@ -161,21 +152,8 @@ export class JournalController {
     journal: Journal,
   ): Promise<void> {
     journal.status = 'updated';
+    journal.updatedAt = new Date();
     await this.journalRepository.updateById(id, journal);
-  }
-
-  @put('/journal/{id}', {
-    responses: {
-      '204': {
-        description: 'Journal PUT success',
-      },
-    },
-  })
-  async replaceById(
-    @param.path.string('id') id: string,
-    @requestBody() journal: Journal,
-  ): Promise<void> {
-    await this.journalRepository.replaceById(id, journal);
   }
 
   @del('/journal/{id}', {
@@ -199,18 +177,15 @@ export class JournalController {
   })
   @authenticate('jwt')
   @authorize(JournalAcl['change-status'])
-  async journalReviewed(
-    @param.path.string('id') id: string
-  ): Promise<void> {
+  async journalReviewed(@param.path.string('id') id: string): Promise<void> {
+    const journal = await this.journalRepository.findById(id);
 
-    const journal = await this.journalRepository.findById(id)
-
-    if(!journal) {
-      throw new HttpErrors.BadRequest('Journal doesnt exists')
+    if (!journal) {
+      throw new HttpErrors.BadRequest('Journal doesnt exists');
     }
 
-    journal.status = 'review'
-    journal.updatedAt = new Date()
+    journal.status = 'review';
+    journal.updatedAt = new Date();
     await this.journalRepository.updateById(id, journal);
   }
 
@@ -225,16 +200,16 @@ export class JournalController {
   @authenticate('jwt')
   @authorize(JournalAcl['change-status'])
   async journalNeedDiscussion(
-    @param.path.string('id') id: string
+    @param.path.string('id') id: string,
   ): Promise<void> {
+    const journal = await this.journalRepository.findById(id);
 
-    const journal = await this.journalRepository.findById(id)
-
-    if(!journal) {
-      throw new HttpErrors.BadRequest('Journal doesnt exists')
+    if (!journal) {
+      throw new HttpErrors.BadRequest('Journal doesnt exists');
     }
 
-    journal.status = 'discuss'
+    journal.status = 'discuss';
+    journal.updatedAt = new Date();
 
     await this.journalRepository.updateById(id, journal);
   }

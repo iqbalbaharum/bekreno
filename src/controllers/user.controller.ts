@@ -462,7 +462,7 @@ export class UserController {
     return this.userRepository.findById(user.user);
   }
 
-  @get('/user/forget/email/{email}', {
+  @post('/user/forget/email', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -470,11 +470,26 @@ export class UserController {
     },
   })
   async forgetPasswordByEmail(
-    @param.path.string('email') userEmail: string,
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded': {
+          schema: {
+            type: 'object',
+            required: ['email'],
+            properties: {
+              email: {
+                type: 'string',
+              }
+            }
+          }
+        }
+      }
+    }) forgetemail: {email: string}
   ): Promise<{result: Boolean}> {
     let bRetCode = false;
     const userExisted = await this.userRepository.findOne({
-      where: {email: userEmail},
+      where: {email: forgetemail.email},
     });
 
     if (!userExisted) {

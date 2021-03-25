@@ -45,9 +45,11 @@ import {
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
+import { UserEmailSchema } from '../schema/user-email.schema';
 import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
+import { UserEmail } from '../types/user-email.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
 
 // ACL
@@ -462,7 +464,7 @@ export class UserController {
     return this.userRepository.findById(user.user);
   }
 
-  @get('/user/forget/email/{email}', {
+  @post('/user/forget/email', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -470,11 +472,20 @@ export class UserController {
     },
   })
   async forgetPasswordByEmail(
-    @param.path.string('email') userEmail: string,
+    @requestBody({
+      required: true,
+      content: {
+        'application/x-www-form-urlencoded' : {
+          schema: UserEmailSchema
+        }
+      }
+    })
+    // create an object that refer to user-email.types.ts
+    userEmail: UserEmail
   ): Promise<{result: Boolean}> {
     let bRetCode = false;
     const userExisted = await this.userRepository.findOne({
-      where: {email: userEmail},
+      where: {email: userEmail.email},
     });
 
     if (!userExisted) {
@@ -516,7 +527,7 @@ export class UserController {
     return {result: bRetCode, token: token};
   }
 
-  @post('/user/forget', {
+  @post('/user/forget/', {
     responses: {
       '200': {
         description: 'Forget password',
@@ -534,7 +545,7 @@ export class UserController {
   ): Promise<{result: Boolean}> {
     const userId = await this.jwtService.decodeResetPasswordToken(forget.token);
     const credential = await this.userRepository.findCredentials(userId);
-
+    
     if (!credential) {
       throw new HttpErrors.Unauthorized('Invalid forget password token');
     } else {

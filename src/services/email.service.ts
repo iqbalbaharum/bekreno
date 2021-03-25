@@ -47,37 +47,40 @@ export class EmailService {
       throw new HttpErrors.InternalServerError('Invalid Email. Please make sure there is an email template under the code')
     }
 
-    const body = ejs.render(bodyContent.body!, data)
+    // data need to be sent as an object
+    const body = ejs.render(bodyContent.body!, {data})
 
+    /* No longer needed to reduce logic processing */
     // Setup email container
-    const container = await this.emailTemplateRepository.findOne({
-      where: {code: 'CONTAINER'}
-    })
+    // const container = await this.emailTemplateRepository.findOne({
+    //   where: {code: 'CONTAINER'}
+    // })
 
-    const headerContent = await this.emailTemplateRepository.findOne({
-      where: {code: 'HEADER'}
-    })
+    // const headerContent = await this.emailTemplateRepository.findOne({
+    //   where: {code: 'HEADER'}
+    // })
 
-    const footerContent = await this.emailTemplateRepository.findOne({
-      where: {code: 'FOOTER'}
-    })
+    // const footerContent = await this.emailTemplateRepository.findOne({
+    //   where: {code: 'FOOTER'}
+    // })
 
-    if(!container || !headerContent || !footerContent || !bodyContent) {
+    if(!bodyContent) {
       throw new HttpErrors.InternalServerError('Internal error. Please reseed a fresh copy of email templates.')
     }
 
-    const template = ejs.render(container.body!, {
-      content: {
-        header: headerContent.body,
-        footer: footerContent.body,
-        body: body
-      }
-    })
+    /* render method did not has any key named as 'content' */
+    // const template = ejs.render(container.body!, {
+    //   content: {
+    //     header: headerContent.body,
+    //     footer: footerContent.body,
+    //     body: body
+    //   }
+    // })
 
     const email = new Email({
       to: to,
       subject: bodyContent.subject,
-      content: template,
+      content: body, // Sent the whole body of PASSWORDRESET as a whole including header and footer
     });
 
     return this.sendMail(email)

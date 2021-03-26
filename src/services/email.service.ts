@@ -77,7 +77,7 @@ export class EmailService {
     const email = new Email({
       to: to,
       subject: bodyContent.subject,
-      content: template,
+      content: body,
     });
 
     return this.sendMail(email)

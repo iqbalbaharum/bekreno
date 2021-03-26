@@ -462,7 +462,7 @@ export class UserController {
     return this.userRepository.findById(user.user);
   }
 
-  @get('/user/forget/email/{email}', {
+  @post('/user/forget/email/{email}', {
     responses: {
       '200': {
         description: 'Forget password',

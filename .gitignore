@@ -65,3 +65,6 @@ typings/
 
 # storage
 /storage
+
+# Docker
+/docker

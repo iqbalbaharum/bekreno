@@ -4,6 +4,5 @@ export type ForgetPassword = {
 };
 
 export type EmailPassword = {
-
   email: string;
 };

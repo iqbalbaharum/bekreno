@@ -27,7 +27,6 @@ import {
   RestBindings
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
-import { Console } from 'console';
 import {
   PasswordHasherBindings,
   TokenServiceBindings,
@@ -478,8 +477,7 @@ export class UserController {
           schema: EmailPasswordSchema
         }
       }
-    })
-    userEmail: EmailPassword
+    })userEmail: EmailPassword
 
   ): Promise<{result: Boolean}> {
     let bRetCode = false;
@@ -494,9 +492,6 @@ export class UserController {
     }
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
-    
-    console.log(token);
-
     await this.emailService.sendEmailFromTemplate('PASSWORDRESET', { name: userExisted.name, token: token }, userExisted.email);
 
     return {result: bRetCode};
@@ -528,7 +523,7 @@ export class UserController {
     return {result: bRetCode, token: token};
   }
 
-  @post('/user/forget', {
+  @post('/user/reset/', {
     responses: {
       '200': {
         description: 'Forget password',

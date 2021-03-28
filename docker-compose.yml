@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+
+  cache:
+    redis:
+      image: "redis:alpine"
+      ports:
+        - "6379:6379"
+      volumes:
+      - redis_data:/data
+    networks:
+      - redis-net
+
+    rabbitmq:
+     image: rabbit:alpine
+     ports:
+      - "15672:15672"
+      - "5672:5672"
+    tty: true
+    volumes:
+      - /var/lib/rabbitmq
+
+  database:
+    image: mongodb
+    container_name: "bekreno_mongodb"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lmskreno
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mongodb:/var/lib/mysql

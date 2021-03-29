@@ -38,3 +38,5 @@ export * from './topic-notes.model';
 export * from './topic-tags.model';
 export * from './topic-voter.model';
 export * from './dto-topic.model';
+export * from './notification.model';
+export * from './user-channel.model';

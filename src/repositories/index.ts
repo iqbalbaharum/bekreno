@@ -34,3 +34,5 @@ export * from './topic.repository';
 export * from './topic-notes.repository';
 export * from './topic-tags.repository';
 export * from './topic-voter.repository';
+export * from './notification.repository';
+export * from './user-channel.repository';

@@ -6,7 +6,7 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -17,11 +17,12 @@ import {
   patch,
   post,
   put,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {DtoTopic, Topic, User} from '../models';
 import {TagsRepository, TopicRepository} from '../repositories';
+import {NotificationService} from '../services';
 
 export class TopicController {
   constructor(
@@ -31,6 +32,7 @@ export class TopicController {
     public tagsRepository: TagsRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<MyUserProfile>,
+    @inject('services.NotificationService') protected notificationService: NotificationService
   ) {}
 
   @post('/topics', {
@@ -70,6 +72,10 @@ export class TopicController {
     for (const tagId of topic.tagIds) {
       await this.topicRepository.tags(newTopic.id).link(tagId);
     }
+
+    await this.notificationService.tagged(user.userId, [
+      `topic=${newTopic.id}`
+    ])
 
     return newTopic;
   }

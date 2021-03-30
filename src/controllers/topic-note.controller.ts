@@ -1,9 +1,10 @@
+import {inject} from '@loopback/context';
 import {
   Count,
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -13,14 +14,16 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {Note, Topic} from '../models';
 import {TopicRepository} from '../repositories';
+import {NotificationService} from '../services';
 
 export class TopicNoteController {
   constructor(
     @repository(TopicRepository) protected topicRepository: TopicRepository,
+    @inject('services.NotificationService') protected notificationService: NotificationService
   ) {}
 
   @get('/topics/{id}/notes', {
@@ -39,6 +42,7 @@ export class TopicNoteController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<Note>,
   ): Promise<Note[]> {
+
     return this.topicRepository.notes(id).find(filter);
   }
 
@@ -64,7 +68,13 @@ export class TopicNoteController {
     })
     note: Omit<Note, 'id'>,
   ): Promise<Note> {
-    return this.topicRepository.notes(id).create(note);
+    const noteCreated = await this.topicRepository.notes(id).create(note);
+
+    await this.notificationService.tagged(note.fromUserId, [
+      `topic=${id}`
+    ])
+
+    return noteCreated
   }
 
   @patch('/topics/{id}/notes', {

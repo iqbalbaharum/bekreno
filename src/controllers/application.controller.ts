@@ -15,7 +15,7 @@ import {
 import {Application} from '../models';
 import {ApplicationRepository, RoleRepository, UserApplicationRepository, UserRepository} from '../repositories';
 import {ApplicationCloseSchema} from '../schema';
-import {EmailService} from '../services';
+import {EmailService, NotificationService} from '../services';
 import {ApplicationClose} from '../types';
 
 export class ApplicationController {
@@ -29,6 +29,7 @@ export class ApplicationController {
     @repository(RoleRepository)
     public roleRepository : RoleRepository,
     @inject('services.EmailService') protected emailService: EmailService,
+    @inject('services.NotificationService') protected notificationService: NotificationService
   ) {}
 
   @post('/application', {

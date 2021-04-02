@@ -1,61 +1,47 @@
 import {bind, /* inject, */ BindingScope} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {UserChannelRepository} from '../repositories';
+import {Filter, PredicateComparison, repository} from '@loopback/repository';
+import {Notification} from '../models';
+import {NotificationRepository, UserChannelRepository} from '../repositories';
 
-@bind({scope: BindingScope.SINGLETON})
+interface RefObject {
+  userId : string,
+  userName: string
+}
+
+@bind({scope: BindingScope.TRANSIENT})
 export class NotificationService {
   constructor(
-    @repository(UserChannelRepository) protected userChannelRepository: UserChannelRepository
+    @repository(UserChannelRepository) protected userChannelRepository: UserChannelRepository,
+    @repository(NotificationRepository) protected notificationRepository: NotificationRepository
   ) {}
 
-  async tagged(refId: string, channels: string[]) : Promise<void> {
-
-    const userChannel = await this.userChannelRepository.findOne({
-      where: {
-        refUserId: refId
-      }
+  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Notification[]> {
+    let user = await this.userChannelRepository.findOne({
+      where: { refUserId : refUserId }
     })
 
-    if(!userChannel) {
-      await this.userChannelRepository.create({
-        refUserId: refId,
-        channels: channels
-      })
-
-      return
+    if(!user || user.channels.length < 0) {
+      return []
     }
 
-    userChannel.channels?.push(...channels!)
-    userChannel.updatedAt = new Date()
+    let chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>user.channels
 
-    await this.userChannelRepository.updateById(userChannel.id, userChannel)
+    let filter: Filter<Notification> = {
+      where: { channels: { inq: chas } as PredicateComparison<string[]>, createdAt: { gte: startingDate }},
+      limit: limit,
+      skip: skip
+    }
+    return this.notificationRepository.find(filter)
   }
 
-  async untagged(refId: string, channels: string[]) : Promise<void> {
-
-    const userChannel = await this.userChannelRepository.findOne({
-      where: {
-        refUserId: refId
-      }
+  async setNotification(type: string, action: string, refId: string, refUserId: string, refName: string, channels: string[]) {
+    this.notificationRepository.create({
+      refUserId: refUserId,
+      refUserName: refName,
+      type: type,
+      action: action,
+      refId: refId,
+      channels: channels
     })
-
-    if(!userChannel) {
-      return
-    }
-
-    let bUpdate = false
-    for(const channel of channels!) {
-      const foundIndex = userChannel.channels?.indexOf(channel)
-      if(foundIndex !== -1) {
-        userChannel.channels?.splice(foundIndex!, 1)
-        bUpdate = true
-      }
-    }
-
-    if(bUpdate) {
-      userChannel.updatedAt = new Date()
-      await this.userChannelRepository.updateById(userChannel.id, userChannel)
-    }
-
   }
 }

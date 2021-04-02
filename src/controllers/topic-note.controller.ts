@@ -1,4 +1,5 @@
-import {inject} from '@loopback/context';
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/context';
 import {
   Count,
   CountSchema,
@@ -16,14 +17,14 @@ import {
   post,
   requestBody
 } from '@loopback/rest';
-import {Note, Topic} from '../models';
+import {MyUserProfile} from '../components/jwt-authentication/types';
+import {Note} from '../models';
 import {TopicRepository} from '../repositories';
-import {NotificationService} from '../services';
-
+import {NotificationService, UserChannelService} from '../services';
 export class TopicNoteController {
   constructor(
     @repository(TopicRepository) protected topicRepository: TopicRepository,
-    @inject('services.NotificationService') protected notificationService: NotificationService
+    @inject('services.UserChannelService') protected userChannelService: UserChannelService
   ) {}
 
   @get('/topics/{id}/notes', {
@@ -54,8 +55,9 @@ export class TopicNoteController {
       },
     },
   })
+  @authenticate('jwt')
   async create(
-    @param.path.string('id') id: typeof Topic.prototype.id,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -67,12 +69,28 @@ export class TopicNoteController {
       },
     })
     note: Omit<Note, 'id'>,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>,
+    @inject('services.NotificationService') notificationService: NotificationService,
   ): Promise<Note> {
     const noteCreated = await this.topicRepository.notes(id).create(note);
 
-    await this.notificationService.tagged(note.fromUserId, [
+    await this.userChannelService.tagged(note.fromUserId, [
       `topic=${id}`
     ])
+
+    const token = await getCurrentUser()
+
+    await notificationService.setNotification(
+      'TOPIC',
+      'COMMENT',
+      id,
+      token.user,
+      token.name || '',
+      [
+        `topic.${id}`,
+        `topic.${id}.comment.${noteCreated.id}`
+      ]
+    )
 
     return noteCreated
   }

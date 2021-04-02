@@ -22,7 +22,7 @@ import {
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {DtoTopic, Topic, User} from '../models';
 import {TagsRepository, TopicRepository} from '../repositories';
-import {NotificationService} from '../services';
+import {UserChannelService} from '../services';
 
 export class TopicController {
   constructor(
@@ -32,7 +32,7 @@ export class TopicController {
     public tagsRepository: TagsRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
     public getCurrentUser: Getter<MyUserProfile>,
-    @inject('services.NotificationService') protected notificationService: NotificationService
+    @inject('services.UserChannelService') protected userChannelService: UserChannelService
   ) {}
 
   @post('/topics', {
@@ -73,8 +73,8 @@ export class TopicController {
       await this.topicRepository.tags(newTopic.id).link(tagId);
     }
 
-    await this.notificationService.tagged(user.userId, [
-      `topic=${newTopic.id}`
+    await this.userChannelService.tagged(user.userId, [
+      `topic.${newTopic.id}`
     ])
 
     return newTopic;

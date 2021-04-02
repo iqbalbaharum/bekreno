@@ -20,7 +20,7 @@ export class UserChannel extends Entity {
     itemType: 'string',
     default: () => []
   })
-  channels?: string[];
+  channels: string[];
 
   @property({
     type: 'date',

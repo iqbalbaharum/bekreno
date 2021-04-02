@@ -1,6 +1,12 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({
+  settings: {
+    mongodb: {
+      collection: 'Notification'
+    }
+  }
+})
 export class Notification extends Entity {
   @property({
     type: 'string',
@@ -39,8 +45,12 @@ export class Notification extends Entity {
   })
   refId?: string;
 
-  @property.array(String)
-  channels?: string[];
+  @property({
+    type: 'array',
+    itemType: 'string',
+    default: () => []
+  })
+  channels: string[];
 
   @property({
     type: 'date',

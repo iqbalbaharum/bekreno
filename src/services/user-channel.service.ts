@@ -25,7 +25,12 @@ export class UserChannelService {
       return
     }
 
-    userChannel.channels?.push(...channels!)
+    for(const channel of channels) {
+      if(!userChannel.channels.find(e => e === channel)) {
+        userChannel.channels.push(channel)
+      }
+    }
+
     userChannel.updatedAt = new Date()
 
     await this.userChannelRepository.updateById(userChannel.id, userChannel)

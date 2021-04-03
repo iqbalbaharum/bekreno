@@ -51,3 +51,5 @@ export * from './zone.controller';
 
 export * from './notification.controller';
 export * from './user-channel.controller';
+export * from './user-topic.controller';
+export * from './user-project.controller';

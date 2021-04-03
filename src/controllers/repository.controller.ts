@@ -1,3 +1,4 @@
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -22,11 +23,12 @@ import {
 } from '@loopback/rest';
 import {Repository} from '../models';
 import {RepositoryRepository} from '../repositories';
+import {UserChannelService} from '../services';
 
 export class RepositoryController {
   constructor(
     @repository(RepositoryRepository)
-    public repositoryRepository : RepositoryRepository,
+    public repositoryRepository : RepositoryRepository
   ) {}
 
   @post('/repository', {
@@ -44,6 +46,7 @@ export class RepositoryController {
       },
     })
     repository: any,
+    @inject('service.UserChannelService') userChannelService: UserChannelService
   ): Promise<Repository> {
     const tagIds = repository.tagIds
 
@@ -53,6 +56,11 @@ export class RepositoryController {
     for(const id of tagIds) {
       await this.repositoryRepository.tags(repo.id).link(id)
     }
+
+    await userChannelService.tagged(repo.userId, [
+      `repository.${repo.id}`,
+      `project.${repo.projectId}`
+    ])
 
     return repo
   }

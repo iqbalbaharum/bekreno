@@ -30,8 +30,12 @@ export class UserChannelObserver implements LifeCycleObserver {
       {relation: 'roles' },
       {relation: 'journals' },
       {relation: 'profile' },
-      {relation: 'applications' }
+      {relation: 'applications' },
+      {relation: 'repositories' },
+      {relation: 'topics' },
+      {relation: 'projects' }
     ]})
+
     for(const user of users) {
       const tags = []
 
@@ -40,8 +44,28 @@ export class UserChannelObserver implements LifeCycleObserver {
       }
 
       tags.push(...user.roles.map(e => `role.${e.name}`))
-      tags.push(...user.journals.map(e => `journal.${e.id}`))
-      tags.push(...user.applications.map(e => `application.${e.id}`))
+
+      if(user.journals) {
+        tags.push(...user.journals.map(e => `journal.${e.id}`))
+      }
+
+      if(user.applications) {
+        tags.push(...user.applications.map(e => `application.${e.id}`))
+      }
+
+      if(user.repositories) {
+        tags.push(...user.repositories.map(e => `repository.${e.id}`))
+        tags.push(...user.repositories.map(e => `project.${e.projectId}`))
+      }
+
+      if(user.projects) {
+        tags.push(...user.repositories.map(e => `project.${e.projectId}`))
+      }
+
+      if(user.topics) {
+        tags.push(...user.topics.map(e => `repository.${e.id}`))
+      }
+
       this.userChannelService.tagged(user.uuid!, tags)
     }
   }

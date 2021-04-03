@@ -1,11 +1,12 @@
-import {authenticate} from '@loopback/authentication';
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
+import {Getter, inject} from '@loopback/context';
 import {
   Count,
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -16,11 +17,13 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
 import {JournalAcl} from '../acl';
+import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Comment, Journal} from '../models';
 import {JournalRepository} from '../repositories';
+import {NotificationService, UserChannelService} from '../services';
 
 @authenticate('jwt')
 export class JournalCommentController {
@@ -71,6 +74,9 @@ export class JournalCommentController {
       },
     })
     comment: Omit<Comment, 'id'>,
+    @inject('services.UserChannelService') userChannelService: UserChannelService,
+    @inject('services.NotificationService') notificationService: NotificationService,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>
   ): Promise<Comment> {
     const journal = await this.journalRepository.findById(id);
 
@@ -78,6 +84,8 @@ export class JournalCommentController {
       throw new HttpErrors.BadRequest('Invalid journal');
     }
 
+    let token = await getCurrentUser()
+    comment.userId = token.user
     const commentCreated = await this.journalRepository
       .comments(id)
       .create(comment);
@@ -86,10 +94,24 @@ export class JournalCommentController {
       throw new HttpErrors.BadRequest('Invalid comment');
     }
 
+    await userChannelService.tagged(commentCreated.userId, [
+      `journal.${journal.id}`,
+      `journal.${journal.id}.comment`
+    ])
+
     journal.status = 'updated';
     journal.updatedAt = new Date();
 
     await this.journalRepository.updateById(journal.id, journal);
+
+    notificationService.setNotification(
+      'JOURNAL',
+      'COMMENT',
+      journal.id!,
+      token.user,
+      token.name!,
+      [`journal.${journal.id}`]
+    )
 
     return commentCreated;
   }

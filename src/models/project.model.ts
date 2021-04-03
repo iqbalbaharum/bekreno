@@ -48,6 +48,11 @@ export class Project extends BaseEntity {
   @hasMany(() => Repository)
   repositories: Repository[];
 
+  @property({
+    type: 'string',
+  })
+  userId?: string;
+
   constructor(data?: Partial<Project>) {
     super(data);
   }

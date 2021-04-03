@@ -1,23 +1,31 @@
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
-  requestBody,
+
+  requestBody
 } from '@loopback/rest';
+import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Project} from '../models';
 import {ProjectRepository} from '../repositories';
+import {UserChannelService} from '../services';
 
 export class ProjectController {
   constructor(
@@ -33,6 +41,7 @@ export class ProjectController {
       },
     },
   })
+  @authenticate('jwt')
   async create(
     @requestBody({
       content: {
@@ -45,8 +54,17 @@ export class ProjectController {
       },
     })
     project: Omit<Project, 'id'>,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>,
+    @inject('services.UserChannelService') userChannelService: UserChannelService
   ): Promise<Project> {
-    return this.projectRepository.create(project);
+    const token = await getCurrentUser()
+    project.userId = token.user
+    const projectCreated = await this.projectRepository.create(project);
+    userChannelService.tagged(token.user, [
+      `project.${projectCreated.id}`
+    ])
+
+    return projectCreated
   }
 
   @get('/project/count', {

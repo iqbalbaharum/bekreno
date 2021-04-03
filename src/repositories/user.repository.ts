@@ -25,8 +25,7 @@ import {
   User,
 
   UserApplication, UserNote, UserRelations,
-  UserRole
-} from '../models';
+  UserRole, Topic, Project} from '../models';
 import {ApplicationRepository} from './application.repository';
 import {CredentialRepository} from './credential.repository';
 import {JournalRepository} from './journal.repository';
@@ -38,6 +37,8 @@ import {SessionRepository} from './session.repository';
 import {UserApplicationRepository} from './user-application.repository';
 import {UserNoteRepository} from './user-note.repository';
 import {UserRoleRepository} from './user-role.repository';
+import {TopicRepository} from './topic.repository';
+import {ProjectRepository} from './project.repository';
 
 export class UserRepository extends DefaultCrudRepository<
   User,
@@ -84,6 +85,10 @@ export class UserRepository extends DefaultCrudRepository<
           typeof User.prototype.uuid
         >;
 
+  public readonly topics: HasManyRepositoryFactory<Topic, typeof User.prototype.uuid>;
+
+  public readonly projects: HasManyRepositoryFactory<Project, typeof User.prototype.uuid>;
+
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
     @repository.getter('CredentialRepository')
@@ -103,9 +108,13 @@ export class UserRepository extends DefaultCrudRepository<
     @repository.getter('UserApplicationRepository')
     protected userApplicationRepositoryGetter: Getter<UserApplicationRepository>,
     @repository.getter('ApplicationRepository')
-    protected applicationRepositoryGetter: Getter<ApplicationRepository>, @repository.getter('UserNoteRepository') protected userNoteRepositoryGetter: Getter<UserNoteRepository>, @repository.getter('NoteRepository') protected noteRepositoryGetter: Getter<NoteRepository>,
+    protected applicationRepositoryGetter: Getter<ApplicationRepository>, @repository.getter('UserNoteRepository') protected userNoteRepositoryGetter: Getter<UserNoteRepository>, @repository.getter('NoteRepository') protected noteRepositoryGetter: Getter<NoteRepository>, @repository.getter('TopicRepository') protected topicRepositoryGetter: Getter<TopicRepository>, @repository.getter('ProjectRepository') protected projectRepositoryGetter: Getter<ProjectRepository>,
   ) {
     super(User, dataSource);
+    this.projects = this.createHasManyRepositoryFactoryFor('projects', projectRepositoryGetter,);
+    this.registerInclusionResolver('projects', this.projects.inclusionResolver);
+    this.topics = this.createHasManyRepositoryFactoryFor('topics', topicRepositoryGetter,);
+    this.registerInclusionResolver('topics', this.topics.inclusionResolver);
     this.notes = this.createHasManyThroughRepositoryFactoryFor('notes', noteRepositoryGetter, userNoteRepositoryGetter,);
     this.registerInclusionResolver('notes', this.notes.inclusionResolver);
     this.repositories = this.createHasManyRepositoryFactoryFor('repositories', repositoryRepositoryGetter,);

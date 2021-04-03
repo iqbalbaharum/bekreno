@@ -142,7 +142,7 @@ export class UserController {
 
       await this.emailService.sendEmailFromTemplate('WELCOMEMSG', { name: userCreated.name }, userCreated.email);
       await this.userChannelService.tagged(userCreated.uuid!, [
-        'role=user'
+        'role.user'
       ])
       return userCreated;
     } else {

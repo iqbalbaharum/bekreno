@@ -75,7 +75,7 @@ export class TopicNoteController {
     const noteCreated = await this.topicRepository.notes(id).create(note);
 
     await this.userChannelService.tagged(note.fromUserId, [
-      `topic=${id}`
+      `topic.${id}`
     ])
 
     const token = await getCurrentUser()

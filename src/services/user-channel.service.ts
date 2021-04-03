@@ -16,16 +16,18 @@ export class UserChannelService {
       }
     })
 
+    const uniqueChannels = [...new Set(channels)]
+
     if(!userChannel) {
       await this.userChannelRepository.create({
         refUserId: refId,
-        channels: channels
+        channels: uniqueChannels
       })
 
       return
     }
 
-    for(const channel of channels) {
+    for(const channel of uniqueChannels) {
       if(!userChannel.channels.find(e => e === channel)) {
         userChannel.channels.push(channel)
       }

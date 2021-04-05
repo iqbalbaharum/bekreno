@@ -1,5 +1,6 @@
-import {bind, /* inject, */ BindingScope} from '@loopback/core';
+import {bind, /* inject, */ BindingScope, inject} from '@loopback/core';
 import {Filter, PredicateComparison, repository} from '@loopback/repository';
+import {NotifyService} from '../components/notify/services/notify.service';
 import {Notification} from '../models';
 import {NotificationRepository, UserChannelRepository} from '../repositories';
 
@@ -12,7 +13,8 @@ interface RefObject {
 export class NotificationService {
   constructor(
     @repository(UserChannelRepository) protected userChannelRepository: UserChannelRepository,
-    @repository(NotificationRepository) protected notificationRepository: NotificationRepository
+    @repository(NotificationRepository) protected notificationRepository: NotificationRepository,
+    @inject('services.NotifyService') public notifyService: NotifyService
   ) {}
 
   async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Notification[]> {
@@ -31,11 +33,12 @@ export class NotificationService {
       limit: limit,
       skip: skip
     }
+
     return this.notificationRepository.find(filter)
   }
 
   async setNotification(type: string, action: string, refId: string, refUserId: string, refName: string, channels: string[]) {
-    this.notificationRepository.create({
+    const notification = this.notificationRepository.create({
       refUserId: refUserId,
       refUserName: refName,
       type: type,
@@ -43,5 +46,7 @@ export class NotificationService {
       refId: refId,
       channels: channels
     })
+
+    this.notifyService.push('email', notification)
   }
 }

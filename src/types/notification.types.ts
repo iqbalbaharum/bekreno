@@ -5,10 +5,3 @@ export type Notification = {
   title: string;
   message: string;
 };
-
-export enum NotificationType {
-  NONE = 'NONE',
-  TOPIC = 'TOPIC',
-  JOURNAL = 'JOURNAL',
-  AUTH = 'AUTH'
-}

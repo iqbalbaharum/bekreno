@@ -10,14 +10,14 @@ import {
   getModelSchemaRef, HttpErrors
 } from '@loopback/rest';
 import {MyUserProfile} from '../components/jwt-authentication/types';
-import {Notification} from '../models';
-import {NotificationRepository, UserRepository} from '../repositories';
+import {Activity} from '../models';
+import {ActivityRepository, UserRepository} from '../repositories';
 import {NotificationService} from '../services';
 
 export class NotificationController {
   constructor(
-    @repository(NotificationRepository)
-    public notificationRepository : NotificationRepository,
+    @repository(ActivityRepository)
+    public activityRepository : ActivityRepository,
     @inject('services.NotificationService') public notificationService: NotificationService
   ) {}
 
@@ -29,7 +29,7 @@ export class NotificationController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Notification, {includeRelations: true}),
+              items: getModelSchemaRef(Activity, {includeRelations: true}),
             },
           },
         },
@@ -40,7 +40,7 @@ export class NotificationController {
   async find(
     @repository(UserRepository) userRepository: UserRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>
-  ): Promise<Notification[]> {
+  ): Promise<Activity[]> {
 
     const token = await getCurrentUser()
 

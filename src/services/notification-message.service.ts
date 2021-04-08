@@ -2,9 +2,8 @@ import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
 import ejs from 'ejs';
-import {Notification} from '../models';
+import {Activity} from '../models';
 import {TemplateRepository} from '../repositories';
-import {NotificationType} from '../types';
 
 @bind({scope: BindingScope.TRANSIENT})
 export class NotificationMessageService {
@@ -12,20 +11,20 @@ export class NotificationMessageService {
     @repository(TemplateRepository) protected templateRepository: TemplateRepository
   ) {}
 
-  async getTemplate(notification: Notification, type: string) {
+  async getTemplate(activity: Activity, type: string) {
 
     const body = await this.templateRepository.findOne({
       where: {
-        code: `${NotificationType[notification.type!]}.${notification.action?.toLowerCase()}`,
+        code: `${activity.type}.${activity.action?.toLowerCase()}`,
         type: type
       }
     })
 
     if (!body) {
-      throw new HttpErrors.InternalServerError('Invalid. Please make sure there is an email template under the code')
+      return
     }
 
-    const bodyContent = ejs.render(body.body!, notification)
+    const bodyContent = ejs.render(body.body!, activity)
 
     if(!body) {
       throw new HttpErrors.InternalServerError('Invalid message structure')

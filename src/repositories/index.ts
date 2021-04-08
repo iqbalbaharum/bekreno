@@ -1,3 +1,4 @@
+export * from './activity.repository';
 export * from './application-project.repository';
 export * from './application.repository';
 export * from './comment.repository';
@@ -10,7 +11,6 @@ export * from './material.repository';
 export * from './module-permission.repository';
 export * from './module.repository';
 export * from './note.repository';
-export * from './notification.repository';
 export * from './operation-permission.repository';
 export * from './operation.repository';
 export * from './permission.repository';

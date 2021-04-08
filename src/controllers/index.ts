@@ -1,3 +1,4 @@
+export * from './activity.controller';
 export * from './application-project.controller';
 export * from './application-user.controller';
 export * from './application.controller';
@@ -17,7 +18,6 @@ export * from './material.controller';
 export * from './module.controller';
 export * from './note-user.controller';
 export * from './note.controller';
-export * from './notification.controller';
 export * from './operation.controller';
 export * from './permission.controller';
 export * from './position.controller';

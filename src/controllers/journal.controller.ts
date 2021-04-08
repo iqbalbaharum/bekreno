@@ -23,7 +23,6 @@ import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
 import {NotificationService, UserChannelService} from '../services';
-import {NotificationType} from '../types';
 
 @authenticate('jwt')
 export class JournalController {
@@ -67,7 +66,7 @@ export class JournalController {
     let journalCreated = await this.journalRepository.create(journal);
 
     await notificationService.setNotification(
-      NotificationType.JOURNAL,
+      'JOURNAL',
       'CREATE',
       journalCreated.id!,
       journalCreated.userId,

@@ -1,14 +1,13 @@
 import {Entity, model, property} from '@loopback/repository';
-import {NotificationType} from '../types';
 
 @model({
   settings: {
     mongodb: {
-      collection: 'Notification'
+      collection: 'Activity'
     }
   }
 })
-export class Notification extends Entity {
+export class Activity extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -32,9 +31,9 @@ export class Notification extends Entity {
   refTypeId?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  type?: NotificationType;
+  type?: string;
 
   @property({
     type: 'string',
@@ -70,13 +69,13 @@ export class Notification extends Entity {
   })
   deletedAt?: Date;
 
-  constructor(data?: Partial<Notification>) {
+  constructor(data?: Partial<Activity>) {
     super(data);
   }
 }
 
-export interface NotificationRelations {
+export interface ActivityRelations {
   // describe navigational properties here
 }
 
-export type NotificationWithRelations = Notification & NotificationRelations;
+export type ActivityWithRelations = Activity & ActivityRelations;

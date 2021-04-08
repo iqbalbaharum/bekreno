@@ -1,27 +1,21 @@
 import {bind, /* inject, */ BindingScope, inject} from '@loopback/core';
 import {Filter, PredicateComparison, repository} from '@loopback/repository';
-import {Notification, User} from '../models';
-import {NotificationRepository, UserChannelRepository, UserRepository} from '../repositories';
-import {NotificationType} from '../types';
+import {Activity, User} from '../models';
+import {ActivityRepository, UserChannelRepository, UserRepository} from '../repositories';
 import {EmailService} from './email.service';
 import {NotificationMessageService} from './notification-message.service';
-
-interface RefObject {
-  userId : string,
-  userName: string
-}
 
 @bind({scope: BindingScope.TRANSIENT})
 export class NotificationService {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
     @repository(UserChannelRepository) protected userChannelRepository: UserChannelRepository,
-    @repository(NotificationRepository) protected notificationRepository: NotificationRepository,
+    @repository(ActivityRepository) protected activityRepository: ActivityRepository,
     @inject('services.NotificationMessageService') public notificationMessageService: NotificationMessageService,
     @inject('services.EmailService') public emailService: EmailService
   ) {}
 
-  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Notification[]> {
+  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Activity[]> {
     let user = await this.userChannelRepository.findOne({
       where: { refUserId : refUserId }
     })
@@ -32,13 +26,13 @@ export class NotificationService {
 
     let chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>user.channels
 
-    let filter: Filter<Notification> = {
+    let filter: Filter<Activity> = {
       where: { channels: { inq: chas } as PredicateComparison<string[]>, createdAt: { gte: startingDate }},
       limit: limit,
       skip: skip
     }
 
-    return this.notificationRepository.find(filter)
+    return this.activityRepository.find(filter)
   }
 
   /**
@@ -76,7 +70,7 @@ export class NotificationService {
    * @param emailService
    */
   async setNotification(
-    type: NotificationType,
+    type: string,
     action: string,
     refId: string,
     refUserId: string,
@@ -84,7 +78,7 @@ export class NotificationService {
     channels: string[]
   ) {
 
-    const notification = await this.notificationRepository.create({
+    const notification = await this.activityRepository.create({
       refUserId: refUserId,
       refUserName: refName,
       type: type,
@@ -94,9 +88,14 @@ export class NotificationService {
     })
 
     let users = await this.getNotificationUsers(channels)
+
+    if(users.length <= 0) {
+      return
+    }
+
     let template = await this.notificationMessageService.getTemplate(notification, 'email')
 
-    if(template && users.length > 0) {
+    if(template) {
       for(const user of users) {
         this.emailService.sendEmailRaw(template.content, template.subject!, user.email)
       }

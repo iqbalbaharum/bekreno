@@ -1,3 +1,4 @@
+export * from './activity.model';
 export * from './application-project.model';
 export * from './application.model';
 export * from './comment.model';
@@ -13,7 +14,6 @@ export * from './material.model';
 export * from './module-permission.model';
 export * from './module.model';
 export * from './note.model';
-export * from './notification.model';
 export * from './operation-permission.model';
 export * from './operation.model';
 export * from './permission.model';

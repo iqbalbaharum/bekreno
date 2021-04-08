@@ -4,7 +4,7 @@ import {HttpErrors} from '@loopback/rest';
 import ejs from 'ejs';
 import * as nodemailer from 'nodemailer';
 import {Email} from '../models';
-import {EmailRepository, EmailTemplateRepository} from '../repositories';
+import {EmailRepository, TemplateRepository} from '../repositories';
 
 @bind({scope: BindingScope.SINGLETON})
 export class EmailService {
@@ -12,7 +12,7 @@ export class EmailService {
 
   constructor(
     @repository(EmailRepository) protected emailRepository: EmailRepository,
-    @repository(EmailTemplateRepository) protected emailTemplateRepository: EmailTemplateRepository
+    @repository(TemplateRepository) protected templateRepository: TemplateRepository
   ) {}
 
   private async sendMail(email: Email): Promise<Object> {
@@ -39,7 +39,7 @@ export class EmailService {
 
   async sendEmailFromTemplate(code: string, data: ejs.Data, to: string) : Promise<Object> {
 
-    const bodyContent = await this.emailTemplateRepository.findOne({
+    const bodyContent = await this.templateRepository.findOne({
       where: {code: code}
     })
 
@@ -50,15 +50,15 @@ export class EmailService {
     const body = ejs.render(bodyContent.body!, data)
 
     // Setup email container
-    const container = await this.emailTemplateRepository.findOne({
+    const container = await this.templateRepository.findOne({
       where: {code: 'CONTAINER'}
     })
 
-    const headerContent = await this.emailTemplateRepository.findOne({
+    const headerContent = await this.templateRepository.findOne({
       where: {code: 'HEADER'}
     })
 
-    const footerContent = await this.emailTemplateRepository.findOne({
+    const footerContent = await this.templateRepository.findOne({
       where: {code: 'FOOTER'}
     })
 

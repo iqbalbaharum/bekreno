@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {NotificationType} from '../types';
 
 @model({
   settings: {
@@ -31,9 +32,9 @@ export class Notification extends Entity {
   refTypeId?: string;
 
   @property({
-    type: 'string',
+    type: 'number',
   })
-  type?: string;
+  type?: NotificationType;
 
   @property({
     type: 'string',

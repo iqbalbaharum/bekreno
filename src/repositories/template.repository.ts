@@ -1,16 +1,16 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {MysqlDataSource} from '../datasources';
-import {Email, EmailRelations} from '../models';
+import {Template, TemplateRelations} from '../models';
 
-export class EmailRepository extends DefaultCrudRepository<
-  Email,
-  typeof Email.prototype.id,
-  EmailRelations
+export class TemplateRepository extends DefaultCrudRepository<
+  Template,
+  typeof Template.prototype.uuid,
+  TemplateRelations
 > {
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource,
   ) {
-    super(Email, dataSource);
+    super(Template, dataSource);
   }
 }

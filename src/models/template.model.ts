@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model()
-export class EmailTemplate extends Entity {
+export class Template extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -61,13 +61,13 @@ export class EmailTemplate extends Entity {
   })
   language?: string;
 
-  constructor(data?: Partial<EmailTemplate>) {
+  constructor(data?: Partial<Template>) {
     super(data);
   }
 }
 
-export interface EmailTemplateRelations {
+export interface TemplateRelations {
   // describe navigational properties here
 }
 
-export type EmailTemplateWithRelations = EmailTemplate & EmailTemplateRelations;
+export type EmailTemplateWithRelations = Template & TemplateRelations;

@@ -1,5 +1,5 @@
-import {model, property, hasMany} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {hasMany, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {Repository} from './repository.model';
 
 @model()

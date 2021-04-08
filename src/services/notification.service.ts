@@ -1,9 +1,8 @@
-import {bind, /* inject, */ BindingScope, inject} from '@loopback/core';
+import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {Filter, PredicateComparison, repository} from '@loopback/repository';
-import {NotifyBindings} from '../components/notify/keys';
-import {INotify} from '../components/notify/types';
 import {Notification} from '../models';
 import {NotificationRepository, UserChannelRepository} from '../repositories';
+import {NotificationType} from '../types';
 
 interface RefObject {
   userId : string,
@@ -15,7 +14,6 @@ export class NotificationService {
   constructor(
     @repository(UserChannelRepository) protected userChannelRepository: UserChannelRepository,
     @repository(NotificationRepository) protected notificationRepository: NotificationRepository
-    @inject(NotifyBindings.NotificationProvider) private readonly notifyProvider: INotify
   ) {}
 
   async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Notification[]> {
@@ -38,7 +36,7 @@ export class NotificationService {
     return this.notificationRepository.find(filter)
   }
 
-  async setNotification(type: string, action: string, refId: string, refUserId: string, refName: string, channels: string[]) {
+  async setNotification(type: NotificationType, action: string, refId: string, refUserId: string, refName: string, channels: string[]) {
     const notification = this.notificationRepository.create({
       refUserId: refUserId,
       refUserName: refName,
@@ -47,7 +45,5 @@ export class NotificationService {
       refId: refId,
       channels: channels
     })
-
-    this.notifyProvider.push(notification)
   }
 }

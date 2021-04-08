@@ -8,3 +8,4 @@ export * from './xml-to-json.service';
 
 
 export * from './notification.service';
+export * from './notification-message-center.service';

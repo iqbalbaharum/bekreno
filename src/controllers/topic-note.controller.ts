@@ -21,6 +21,7 @@ import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Note} from '../models';
 import {TopicRepository} from '../repositories';
 import {NotificationService, UserChannelService} from '../services';
+import {NotificationType} from '../types';
 export class TopicNoteController {
   constructor(
     @repository(TopicRepository) protected topicRepository: TopicRepository,
@@ -81,7 +82,7 @@ export class TopicNoteController {
     const token = await getCurrentUser()
 
     await notificationService.setNotification(
-      'TOPIC',
+      NotificationType.TOPIC,
       'COMMENT',
       id,
       token.user,

@@ -24,6 +24,7 @@ import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Comment, Journal} from '../models';
 import {JournalRepository} from '../repositories';
 import {NotificationService, UserChannelService} from '../services';
+import {NotificationType} from '../types';
 
 @authenticate('jwt')
 export class JournalCommentController {
@@ -105,7 +106,7 @@ export class JournalCommentController {
     await this.journalRepository.updateById(journal.id, journal);
 
     notificationService.setNotification(
-      'JOURNAL',
+      NotificationType.JOURNAL,
       'COMMENT',
       journal.id!,
       token.user,

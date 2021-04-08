@@ -1,14 +1,15 @@
 import {Entity, model, property} from '@loopback/repository';
+import {Message, MessageOptions, MessageType} from '../components/notify/types';
 
 @model()
-export class Email extends Entity {
+export class Email extends Entity implements Message {
   @property({
     type: 'string',
     id: true,
     useDefaultIdType: false,
     defaultFn: 'uuidv4',
   })
-  uuid?: string;
+  id?: string;
 
   @property({
     type: 'string',
@@ -28,16 +29,6 @@ export class Email extends Entity {
 
   @property({
     type: 'string',
-  })
-  cc?: string;
-
-  @property({
-    type: 'string',
-  })
-  bcc?: string;
-
-  @property({
-    type: 'string',
     required: true,
   })
   subject: string;
@@ -47,6 +38,29 @@ export class Email extends Entity {
     required: true,
   })
   content: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  receiver: string;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  type: MessageType;
+
+  @property({
+    type: 'date',
+    name: 'sent',
+  })
+  sentDate: Date;
+
+  @property({
+    type: 'object',
+  })
+  options?: MessageOptions;
 
   constructor(data?: Partial<Email>) {
     super(data);

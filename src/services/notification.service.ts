@@ -1,6 +1,7 @@
 import {bind, /* inject, */ BindingScope, inject} from '@loopback/core';
 import {Filter, PredicateComparison, repository} from '@loopback/repository';
 import {Activity, User} from '../models';
+import {DtoNotification} from '../models/dto-notification.model';
 import {ActivityRepository, UserChannelRepository, UserRepository} from '../repositories';
 import {EmailService} from './email.service';
 import {NotificationMessageService} from './notification-message.service';
@@ -15,7 +16,7 @@ export class NotificationService {
     @inject('services.EmailService') public emailService: EmailService
   ) {}
 
-  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<Activity[]> {
+  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<DtoNotification[]> {
     let user = await this.userChannelRepository.findOne({
       where: { refUserId : refUserId }
     })
@@ -32,7 +33,8 @@ export class NotificationService {
       skip: skip
     }
 
-    return this.activityRepository.find(filter)
+    const activities = await this.activityRepository.find(filter)
+    return this.notificationMessageService.convertActivitiesToNotification(activities, 'web')
   }
 
   /**
@@ -78,7 +80,7 @@ export class NotificationService {
     channels: string[]
   ) {
 
-    const notification = await this.activityRepository.create({
+    const activity = await this.activityRepository.create({
       refUserId: refUserId,
       refUserName: refName,
       type: type,
@@ -93,11 +95,11 @@ export class NotificationService {
       return
     }
 
-    let template = await this.notificationMessageService.getTemplate(notification, 'email')
+    let template = await this.notificationMessageService.convertActivityToNotification(activity, 'email')
 
     if(template) {
       for(const user of users) {
-        this.emailService.sendEmailRaw(template.content, template.subject!, user.email)
+        this.emailService.sendEmailRaw(template.message!, template.title!, user.email)
       }
     }
   }

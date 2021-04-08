@@ -11,6 +11,7 @@ import {
 } from '@loopback/rest';
 import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Activity} from '../models';
+import {DtoNotification} from '../models/dto-notification.model';
 import {ActivityRepository, UserRepository} from '../repositories';
 import {NotificationService} from '../services';
 
@@ -40,7 +41,7 @@ export class NotificationController {
   async find(
     @repository(UserRepository) userRepository: UserRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>
-  ): Promise<Activity[]> {
+  ): Promise<DtoNotification[]> {
 
     const token = await getCurrentUser()
 

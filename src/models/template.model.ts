@@ -57,6 +57,7 @@ export class Template extends Entity {
 
   @property({
     type: 'string',
+    default: 'en-US'
   })
   language?: string;
 

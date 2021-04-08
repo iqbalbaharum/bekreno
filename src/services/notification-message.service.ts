@@ -2,7 +2,8 @@ import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
 import ejs from 'ejs';
-import {Activity} from '../models';
+import {Activity, Template} from '../models';
+import {DtoNotification} from '../models/dto-notification.model';
 import {TemplateRepository} from '../repositories';
 
 @bind({scope: BindingScope.TRANSIENT})
@@ -11,23 +12,71 @@ export class NotificationMessageService {
     @repository(TemplateRepository) protected templateRepository: TemplateRepository
   ) {}
 
-  async getTemplate(activity: Activity, type: string) {
+  async convertActivitiesToNotification(activities: Activity[], type: string) : Promise<DtoNotification[]> {
+
+    let notifications: DtoNotification[] = []
+
+    for(const activity of activities) {
+      const notification = await this.convertActivityToNotification(activity, type)
+      if(notification) {
+        notifications.push(notification)
+      }
+    }
+
+    return notifications
+  }
+
+  async convertActivityToNotification(activity: Activity, type: string) : Promise<DtoNotification | null> {
 
     const body = await this.templateRepository.findOne({
       where: {
         code: `${activity.type}.${activity.action?.toLowerCase()}`,
-        type: type
+        type: type,
+        language: 'en'
       }
     })
 
     if (!body) {
-      return
+      return null
     }
+
+    let content = ''
+
+    switch(type) {
+      case 'web':
+        content = await this.renderWebTemplate(body, activity)
+        break
+      case 'email':
+        content = await this.renderEmailTemplate(body, activity)
+        break;
+      default:
+        return null
+    }
+
+    return new DtoNotification({
+      title: body.subject,
+      message: content,
+      refId: activity.refId,
+      type: activity.type
+    })
+  }
+
+  private async renderWebTemplate(body: Template, activity: Activity) : Promise<string> {
+    return ejs.render(body.body!, activity)
+  }
+
+  /**
+   * Get template based on email
+   * @param body
+   * @param activity
+   * @returns
+   */
+  private async renderEmailTemplate(body: Template, activity: Activity) : Promise<string> {
 
     const bodyContent = ejs.render(body.body!, activity)
 
-    if(!body) {
-      throw new HttpErrors.InternalServerError('Invalid message structure')
+    if(!bodyContent) {
+      return ''
     }
 
     // Setup email container
@@ -61,9 +110,6 @@ export class NotificationMessageService {
       content = bodyContent
     }
 
-    return {
-      content: content,
-      subject: body.subject
-    }
+    return content
   }
 }

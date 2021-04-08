@@ -6,6 +6,7 @@ export * from './company.model';
 export * from './container.model';
 export * from './credential.model';
 export * from './dev-environment.model';
+export * from './dto-notification.model';
 export * from './dto-topic.model';
 export * from './email.model';
 export * from './file.model';
@@ -38,5 +39,6 @@ export * from './user-note.model';
 export * from './user-role.model';
 export * from './user.model';
 export * from './zone.model';
+
 
 

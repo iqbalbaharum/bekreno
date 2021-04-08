@@ -1,5 +1,4 @@
 import {Entity, model, property} from '@loopback/repository';
-
 @model()
 export class Template extends Entity {
   @property({
@@ -23,7 +22,7 @@ export class Template extends Entity {
 
   @property({
     type: 'string',
-    default: 'email',
+    default: 'email', // email | message
     required: true
   })
   type: string;

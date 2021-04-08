@@ -9,7 +9,6 @@ import {EmailRepository, TemplateRepository} from '../repositories';
 @bind({scope: BindingScope.SINGLETON})
 export class EmailService {
 
-
   constructor(
     @repository(EmailRepository) protected emailRepository: EmailRepository,
     @repository(TemplateRepository) protected templateRepository: TemplateRepository
@@ -87,7 +86,7 @@ export class EmailService {
     const email = new Email({
       to: to,
       subject: subject,
-      content: to
+      content: content
     });
 
     return this.sendMail(email)

@@ -45,7 +45,7 @@ import {
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
-import {EmailService, OtpService, SmsTac, UserChannelService, XmlToJsonService} from '../services';
+import {EmailService, OtpService, UserChannelService, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
@@ -70,7 +70,6 @@ export class UserController {
     public credentialRepository: CredentialRepository,
     @repository(ProfileRepository)
     public profileRepository: ProfileRepository,
-    @inject('services.SmsTac') protected smsTacService: SmsTac,
     @inject('services.XmlToJsonService')
     protected xmlToJsonService: XmlToJsonService,
     @inject('services.OtpService') protected otpService: OtpService,
@@ -140,7 +139,7 @@ export class UserController {
 
       await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid);
 
-      await this.emailService.sendEmailFromTemplate('WELCOMEMSG', { name: userCreated.name }, userCreated.email);
+      await this.emailService.sendEmailFromTemplate('general.welcome', { name: userCreated.name }, userCreated.email);
       await this.userChannelService.tagged(userCreated.uuid!, [
         'role.user'
       ])
@@ -475,7 +474,7 @@ export class UserController {
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
-    await this.emailService.sendEmailFromTemplate('PASSWORDRESET', { name: userExisted.name, token: token }, userExisted.email);
+    await this.emailService.sendEmailFromTemplate('auth.passwordreset', { name: userExisted.name, token: token }, userExisted.email);
 
     return {result: bRetCode};
   }

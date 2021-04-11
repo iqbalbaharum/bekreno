@@ -1,8 +1,6 @@
 import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {Getter, inject} from '@loopback/core';
 import {
-
-
   repository
 } from '@loopback/repository';
 import {
@@ -10,12 +8,11 @@ import {
   getModelSchemaRef, HttpErrors
 } from '@loopback/rest';
 import {MyUserProfile} from '../components/jwt-authentication/types';
-import {Activity} from '../models';
-import {DtoNotification} from '../models/dto-notification.model';
+import {Activity, DtoNotification} from '../models';
 import {ActivityRepository, UserRepository} from '../repositories';
 import {NotificationService} from '../services';
 
-export class NotificationController {
+export class ActivityController {
   constructor(
     @repository(ActivityRepository)
     public activityRepository : ActivityRepository,

@@ -1,9 +1,11 @@
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
+import {Getter, inject} from '@loopback/context';
 import {
   Count,
   CountSchema,
   Filter,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -13,14 +15,16 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
-import {Note, Topic} from '../models';
+import {MyUserProfile} from '../components/jwt-authentication/types';
+import {Note} from '../models';
 import {TopicRepository} from '../repositories';
-
+import {NotificationService, UserChannelService} from '../services';
 export class TopicNoteController {
   constructor(
     @repository(TopicRepository) protected topicRepository: TopicRepository,
+    @inject('services.UserChannelService') protected userChannelService: UserChannelService
   ) {}
 
   @get('/topics/{id}/notes', {
@@ -39,6 +43,7 @@ export class TopicNoteController {
     @param.path.string('id') id: string,
     @param.query.object('filter') filter?: Filter<Note>,
   ): Promise<Note[]> {
+
     return this.topicRepository.notes(id).find(filter);
   }
 
@@ -50,8 +55,9 @@ export class TopicNoteController {
       },
     },
   })
+  @authenticate('jwt')
   async create(
-    @param.path.string('id') id: typeof Topic.prototype.id,
+    @param.path.string('id') id: string,
     @requestBody({
       content: {
         'application/json': {
@@ -63,8 +69,30 @@ export class TopicNoteController {
       },
     })
     note: Omit<Note, 'id'>,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) getCurrentUser: Getter<MyUserProfile>,
+    @inject('services.NotificationService') notificationService: NotificationService,
   ): Promise<Note> {
-    return this.topicRepository.notes(id).create(note);
+    const noteCreated = await this.topicRepository.notes(id).create(note);
+
+    await this.userChannelService.tagged(note.fromUserId, [
+      `topic.${id}`
+    ])
+
+    const token = await getCurrentUser()
+
+    await notificationService.setNotification(
+      'TOPIC',
+      'COMMENT',
+      id,
+      token.user,
+      token.name || '',
+      [
+        `topic.${id}`,
+        `topic.${id}.comment.${noteCreated.id}`
+      ]
+    )
+
+    return noteCreated
   }
 
   @patch('/topics/{id}/notes', {

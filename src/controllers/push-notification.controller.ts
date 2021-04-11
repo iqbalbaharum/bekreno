@@ -2,10 +2,10 @@
 import {inject} from '@loopback/core';
 import {post, requestBody} from '@loopback/rest';
 import {NotificationSchema} from '../schema';
+import {PushNotificationService} from '../services';
 import {Notification} from '../types';
-import {PushNotificationService} from './../services';
 
-export class NotificationController {
+export class PushNotificationController {
   constructor(
     @inject('services.PushNotificationService')
     protected pushNotificationService: PushNotificationService,

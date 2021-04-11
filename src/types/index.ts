@@ -1,3 +1,4 @@
+export * from './activity-type.types';
 export * from './application-close.types';
 export * from './credential.types';
 export * from './email-test.types';

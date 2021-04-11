@@ -1,7 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
-
 @model()
-export class EmailTemplate extends Entity {
+export class Template extends Entity {
   @property({
     type: 'string',
     id: true,
@@ -23,7 +22,7 @@ export class EmailTemplate extends Entity {
 
   @property({
     type: 'string',
-    default: 'email',
+    default: 'email', // email | message
     required: true
   })
   type: string;
@@ -58,16 +57,25 @@ export class EmailTemplate extends Entity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
+  })
+  bodyalt?: string;
+
+  @property({
+    type: 'string',
+    default: 'en-US'
   })
   language?: string;
 
-  constructor(data?: Partial<EmailTemplate>) {
+  constructor(data?: Partial<Template>) {
     super(data);
   }
 }
 
-export interface EmailTemplateRelations {
+export interface TemplateRelations {
   // describe navigational properties here
 }
 
-export type EmailTemplateWithRelations = EmailTemplate & EmailTemplateRelations;
+export type EmailTemplateWithRelations = Template & TemplateRelations;

@@ -1,5 +1,5 @@
-import {model, property, belongsTo} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {belongsTo, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {User} from './user.model';
 
 @model()

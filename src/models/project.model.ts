@@ -1,5 +1,5 @@
-import {model, property, hasMany} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {hasMany, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {Repository} from './repository.model';
 
 @model()
@@ -47,6 +47,11 @@ export class Project extends BaseEntity {
 
   @hasMany(() => Repository)
   repositories: Repository[];
+
+  @property({
+    type: 'string',
+  })
+  userId?: string;
 
   constructor(data?: Partial<Project>) {
     super(data);

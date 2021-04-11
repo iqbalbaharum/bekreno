@@ -48,12 +48,12 @@ export class EmailController {
         'application/json': {
           schema: getModelSchemaRef(Email, {
             title: 'NewEmail',
-            exclude: ['uuid'],
+            exclude: ['id'],
           }),
         },
       },
     })
-    email: Omit<Email, 'uuid'>,
+    email: Omit<Email, 'id'>,
   ): Promise<Email> {
     return this.emailRepository.create(email);
   }

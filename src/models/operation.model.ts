@@ -1,5 +1,5 @@
 import {model, property} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {BaseEntity} from './base-entity.model';
 
 @model()
 export class Operation extends BaseEntity {

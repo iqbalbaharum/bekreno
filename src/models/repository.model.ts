@@ -1,13 +1,13 @@
-import {model, property, belongsTo, hasMany} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {DevEnvironment} from './dev-environment.model';
-import {User} from './user.model';
-import {Project} from './project.model';
-import {Position} from './position.model';
 import {Note} from './note.model';
+import {Position} from './position.model';
+import {Project} from './project.model';
 import {RepositoryNote} from './repository-note.model';
-import {Tags} from './tags.model';
 import {Taging} from './taging.model';
+import {Tags} from './tags.model';
+import {User} from './user.model';
 
 @model()
 export class Repository extends BaseEntity {

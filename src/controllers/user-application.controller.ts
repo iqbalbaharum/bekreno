@@ -116,7 +116,7 @@ export class UserApplicationController {
     await this.userRepository.applications(userProfile.user).link(application.applicationId);
 
     const user = await this.userRepository.findById(userProfile.user)
-    await this.emailService.sendEmailFromTemplate('APPLIEDTSA', { name: user.name }, user.email)
+    // await this.emailService.sendEmailFromTemplate('APPLIEDTSA', { name: user.name }, user.email)
   }
 
   @post('/users/{id}/applications/unapply', {

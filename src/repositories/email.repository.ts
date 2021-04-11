@@ -1,11 +1,11 @@
-import {DefaultCrudRepository} from '@loopback/repository';
-import {Email, EmailRelations} from '../models';
-import {MysqlDataSource} from '../datasources';
 import {inject} from '@loopback/core';
+import {DefaultCrudRepository} from '@loopback/repository';
+import {MysqlDataSource} from '../datasources';
+import {Email, EmailRelations} from '../models';
 
 export class EmailRepository extends DefaultCrudRepository<
   Email,
-  typeof Email.prototype.uuid,
+  typeof Email.prototype.id,
   EmailRelations
 > {
   constructor(

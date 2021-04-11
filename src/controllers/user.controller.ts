@@ -45,7 +45,7 @@ import {
 } from '../repositories';
 import {CredentialSchema, OTPCredentialSchema, SignUpSchema} from '../schema';
 import {ForgetPasswordSchema} from '../schema/forget-password.schema';
-import {EmailService, OtpService, SmsTac, XmlToJsonService} from '../services';
+import {EmailService, OtpService, UserChannelService, XmlToJsonService} from '../services';
 import {ForgetPassword, OTPCredential} from '../types';
 import {Credentials} from '../types/credential.types';
 import {OPERATION_SECURITY_SPEC} from './../components/jwt-authentication';
@@ -70,11 +70,11 @@ export class UserController {
     public credentialRepository: CredentialRepository,
     @repository(ProfileRepository)
     public profileRepository: ProfileRepository,
-    @inject('services.SmsTac') protected smsTacService: SmsTac,
     @inject('services.XmlToJsonService')
     protected xmlToJsonService: XmlToJsonService,
     @inject('services.OtpService') protected otpService: OtpService,
     @inject('services.EmailService') protected emailService: EmailService,
+    @inject('services.UserChannelService') protected userChannelService: UserChannelService,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
     @inject(UserServiceBindings.USER_SERVICE)
@@ -118,19 +118,6 @@ export class UserController {
         name: credential.name,
       });
 
-      if (process.env.OTP_ENABLE === '1') {
-        const token = this.otpService.getOTPCode();
-
-        const validity: string = process.env.OTP_VALIDITY ?? '0';
-        await this.smsTacService.sendSms(
-          credential.mobile,
-          `Your verification token is ${token}. Only valid for ${
-            parseInt(validity) / 60000
-          } minute.`,
-          `${token}`,
-        );
-      }
-
       await this.credentialRepository.create({
         password: await this.passwordHasher.hashPassword(credential.password),
         userId: userCreated.uuid,
@@ -152,8 +139,10 @@ export class UserController {
 
       await this.userRepository.roles(userCreated.uuid).link(roleUser.uuid);
 
-      await this.emailService.sendEmailFromTemplate('WELCOMEMSG', { name: userCreated.name }, userCreated.email);
-
+      await this.emailService.sendEmailFromTemplate('general.welcome', { name: userCreated.name }, userCreated.email);
+      await this.userChannelService.tagged(userCreated.uuid!, [
+        'role.user'
+      ])
       return userCreated;
     } else {
       throw new HttpErrors.BadRequest('This mobile already exists');
@@ -485,7 +474,7 @@ export class UserController {
 
     const token = await this.jwtService.generateResetPasswordToken(userExisted);
 
-    await this.emailService.sendEmailFromTemplate('PASSWORDRESET', { name: userExisted.name, token: token }, userExisted.email);
+    await this.emailService.sendEmailFromTemplate('auth.passwordreset', { name: userExisted.name, token: token }, userExisted.email);
 
     return {result: bRetCode};
   }

@@ -8,7 +8,7 @@ export class Email extends Entity {
     useDefaultIdType: false,
     defaultFn: 'uuidv4',
   })
-  uuid?: string;
+  id?: string;
 
   @property({
     type: 'string',
@@ -28,16 +28,6 @@ export class Email extends Entity {
 
   @property({
     type: 'string',
-  })
-  cc?: string;
-
-  @property({
-    type: 'string',
-  })
-  bcc?: string;
-
-  @property({
-    type: 'string',
     required: true,
   })
   subject: string;
@@ -47,6 +37,12 @@ export class Email extends Entity {
     required: true,
   })
   content: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  receiver: string;
 
   constructor(data?: Partial<Email>) {
     super(data);

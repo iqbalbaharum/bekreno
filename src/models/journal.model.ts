@@ -1,8 +1,8 @@
-import {belongsTo, model, property, hasMany} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
+import {Comment} from './comment.model';
 import {Project} from './project.model';
 import {User} from './user.model';
-import {Comment} from './comment.model';
 
 @model()
 export class Journal extends BaseEntity {

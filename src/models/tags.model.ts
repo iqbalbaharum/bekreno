@@ -1,5 +1,5 @@
 import {belongsTo, model, property} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {BaseEntity} from './base-entity.model';
 
 @model()
 export class Tags extends BaseEntity {

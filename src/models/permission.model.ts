@@ -1,11 +1,11 @@
 import {hasMany, model, property} from '@loopback/repository';
-import {BaseEntity} from '.';
+import {BaseEntity} from './base-entity.model';
+import {ModulePermission} from './module-permission.model';
+import {Module} from './module.model';
+import {OperationPermission} from './operation-permission.model';
+import {Operation} from './operation.model';
 import {Role} from './role.model';
 import {Rolepermission} from './rolepermission.model';
-import {Module} from './module.model';
-import {ModulePermission} from './module-permission.model';
-import {Operation} from './operation.model';
-import {OperationPermission} from './operation-permission.model';
 
 @model()
 export class Permission extends BaseEntity {

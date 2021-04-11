@@ -6,7 +6,7 @@ import {
   CountSchema,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
   del,
@@ -16,12 +16,13 @@ import {
   param,
   patch,
   post,
-  requestBody,
+  requestBody
 } from '@loopback/rest';
-import {UserProfile} from '@loopback/security';
 import {JournalAcl} from '../acl';
+import {MyUserProfile} from '../components/jwt-authentication/types';
 import {Journal} from '../models';
 import {JournalRepository} from '../repositories';
+import {NotificationService, UserChannelService} from '../services';
 
 @authenticate('jwt')
 export class JournalController {
@@ -29,7 +30,7 @@ export class JournalController {
     @repository(JournalRepository)
     public journalRepository: JournalRepository,
     @inject.getter(AuthenticationBindings.CURRENT_USER)
-    public getCurrentUser: Getter<UserProfile>,
+    public getCurrentUser: Getter<MyUserProfile>,
   ) {}
 
   @post('/journal', {
@@ -40,6 +41,7 @@ export class JournalController {
       },
     },
   })
+  @authenticate('jwt')
   @authorize(JournalAcl['create-journal'])
   async create(
     @requestBody({
@@ -53,12 +55,30 @@ export class JournalController {
       },
     })
     journal: Omit<Journal, 'id'>,
+    @inject('services.UserChannelService') userChannelService: UserChannelService,
+    @inject('services.NotificationService') notificationService: NotificationService
   ): Promise<Journal> {
     const currentUser = await this.getCurrentUser();
 
     journal.userId = currentUser.user;
     journal.status = 'new';
-    return this.journalRepository.create(journal);
+
+    let journalCreated = await this.journalRepository.create(journal);
+
+    await notificationService.setNotification(
+      'JOURNAL',
+      'CREATE',
+      journalCreated.id!,
+      journalCreated.userId,
+      currentUser.name!,
+      [`role.admin`]
+    )
+
+    await userChannelService.tagged(journalCreated.userId, [
+      `journal.${journalCreated.id}`
+    ])
+
+    return journalCreated
   }
 
   @get('/journal/count', {

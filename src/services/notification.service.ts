@@ -16,8 +16,8 @@ export class NotificationService {
     @inject('services.EmailService') public emailService: EmailService
   ) {}
 
-  async getUserNotifications(refUserId: string, startingDate: Date, limit: number = 20, skip: number = 0) : Promise<DtoNotification[]> {
-    let user = await this.userChannelRepository.findOne({
+  async getUserNotifications(refUserId: string, startingDate: Date, limit = 20, skip = 0) : Promise<DtoNotification[]> {
+    const user = await this.userChannelRepository.findOne({
       where: { refUserId : refUserId }
     })
 
@@ -25,9 +25,9 @@ export class NotificationService {
       return []
     }
 
-    let chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>user.channels
+    const chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>user.channels
 
-    let filter: Filter<Activity> = {
+    const filter: Filter<Activity> = {
       where: { channels: { inq: chas } as PredicateComparison<string[]>, createdAt: { gte: startingDate }},
       limit: limit,
       skip: skip
@@ -44,15 +44,15 @@ export class NotificationService {
    */
   async getNotificationUsers(channels: string[]) : Promise<User[]> {
 
-    let chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>channels
+    const chas : PredicateComparison<string[]> = <PredicateComparison<string[]>>channels
 
-    let filter = {
+    const filter = {
       where: { channels: { inq: chas } as PredicateComparison<string[]> }
     }
 
     const userChannels = await this.userChannelRepository.find(filter)
 
-    let users : User[] = []
+    const users : User[] = []
 
     for(const uc of userChannels) {
       users.push(await this.userRepository.findById(uc.refUserId))
@@ -89,13 +89,13 @@ export class NotificationService {
       channels: channels
     })
 
-    let users = await this.getNotificationUsers(channels)
+    const users = await this.getNotificationUsers(channels)
 
     if(users.length <= 0) {
       return
     }
 
-    let template = await this.notificationMessageService.convertActivityToNotification(activity, 'email')
+    const template = await this.notificationMessageService.convertActivityToNotification(activity, 'email')
 
     if(template) {
       for(const user of users) {

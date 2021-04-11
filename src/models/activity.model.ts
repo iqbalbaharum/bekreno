@@ -28,6 +28,11 @@ export class Activity extends Entity {
   @property({
     type: 'string',
   })
+  images?: string;
+
+  @property({
+    type: 'string',
+  })
   refTypeId?: string;
 
   @property({

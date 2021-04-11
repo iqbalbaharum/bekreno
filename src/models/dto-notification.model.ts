@@ -10,6 +10,11 @@ export class DtoNotification extends Model {
   @property({
     type: 'string',
   })
+  avatar?: string;
+
+  @property({
+    type: 'string',
+  })
   refId?: string;
 
   @property({
@@ -21,6 +26,11 @@ export class DtoNotification extends Model {
     type: 'string',
   })
   message?: string;
+
+  @property({
+    type: 'date'
+  })
+  timestamp?: Date
 
   constructor(data?: Partial<DtoNotification>) {
     super(data);

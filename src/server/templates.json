@@ -6,6 +6,7 @@
 
     { "code": "general.container", "name": "Email Container", "body": "", "language": "en"  },
     { "code": "general.header", "name": "Email Header", "body": "", "language": "en"  },
-    { "code": "general.footer", "name": "Email Footer", "body": "", "language": "en"  }
+    { "code": "general.footer", "name": "Email Footer", "body": "", "language": "en"  },
+    { "code": "topic.comment", "type": "web", "name": "Topic comment", "subject": "Topic comment", "body": "<strong>{{ userName }}<strong> post a comment at a post", "language": "en"  }
   ]
 }

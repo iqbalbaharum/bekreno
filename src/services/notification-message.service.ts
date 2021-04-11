@@ -14,7 +14,7 @@ export class NotificationMessageService {
 
   async convertActivitiesToNotification(activities: Activity[], type: string) : Promise<DtoNotification[]> {
 
-    let notifications: DtoNotification[] = []
+    const notifications: DtoNotification[] = []
 
     for(const activity of activities) {
       const notification = await this.convertActivityToNotification(activity, type)
@@ -44,7 +44,7 @@ export class NotificationMessageService {
 
     switch(type) {
       case 'web':
-        content = await this.renderWebTemplate(body, activity)
+        content = await this.renderMessageTemplate(body, activity)
         break
       case 'email':
         content = await this.renderEmailTemplate(body, activity)
@@ -57,11 +57,12 @@ export class NotificationMessageService {
       title: body.subject,
       message: content,
       refId: activity.refId,
-      type: activity.type
+      type: activity.type,
+      timestamp: activity.createdAt
     })
   }
 
-  private async renderWebTemplate(body: Template, activity: Activity) : Promise<string> {
+  private async renderMessageTemplate(body: Template, activity: Activity) : Promise<string> {
     return render(body.body!, activity)
   }
 

@@ -57,6 +57,14 @@ export class Template extends Entity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text'
+    }
+  })
+  bodyalt?: string;
+
+  @property({
+    type: 'string',
     default: 'en-US'
   })
   language?: string;

@@ -1,7 +1,7 @@
 import {bind, /* inject, */ BindingScope} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
-import ejs from 'ejs';
+import {render} from 'mustache';
 import {Activity, Template} from '../models';
 import {DtoNotification} from '../models/dto-notification.model';
 import {TemplateRepository} from '../repositories';
@@ -62,7 +62,7 @@ export class NotificationMessageService {
   }
 
   private async renderWebTemplate(body: Template, activity: Activity) : Promise<string> {
-    return ejs.render(body.body!, activity)
+    return render(body.body!, activity)
   }
 
   /**
@@ -73,7 +73,7 @@ export class NotificationMessageService {
    */
   private async renderEmailTemplate(body: Template, activity: Activity) : Promise<string> {
 
-    const bodyContent = ejs.render(body.body!, activity)
+    const bodyContent = render(body.body!, activity)
 
     if(!bodyContent) {
       return ''
@@ -99,7 +99,7 @@ export class NotificationMessageService {
     let content = ''
 
     if(headerContent && bodyContent && footerContent) {
-      content = ejs.render(container.body!, {
+      content = render(container.body!, {
         content: {
           header: headerContent.body,
           footer: footerContent.body,

@@ -5,7 +5,7 @@ import {
 import {repository} from '@loopback/repository';
 import {Template} from '../models';
 import {TemplateRepository} from '../repositories';
-import * as templates from '../server/email-templates.json';
+import * as templates from '../server/templates.json';
 
 /**
  * This class will be bound to the application as a `LifeCycleObserver` during

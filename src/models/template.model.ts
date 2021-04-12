@@ -29,21 +29,33 @@ export class Template extends Entity {
 
   @property({
     type: 'string',
+    jsonSchema: {
+      nullable: true,
+    }
   })
   sender?: string;
 
   @property({
     type: 'string',
+    jsonSchema: {
+      nullable: true,
+    }
   })
   from?: string;
 
   @property({
     type: 'string',
+    jsonSchema: {
+      nullable: true,
+    }
   })
   replyTo?: string;
 
   @property({
     type: 'string',
+    jsonSchema: {
+      nullable: true,
+    }
   })
   subject?: string;
 
@@ -59,6 +71,9 @@ export class Template extends Entity {
     type: 'string',
     mysql: {
       dataType: 'text'
+    },
+    jsonSchema: {
+      nullable: true,
     }
   })
   bodyalt?: string;

@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  bekreno:
+    container_name: bekreno
+    restart: always
+    build: .
+    ports:
+      - '4300:4300'
+      - '4301:4301'
+    links:
+      - redis
+      - mongo
+      - myqsl
+      - rabbitmq
+  mongo:
+    container_name: bekreno-mongo
+    image: 'mongo:4'
+  redis:
+    container_name: bekreno-redis
+    image: 'redis:4.0.11'
+  myqsl:
+    container_name: bekreno-mysql
+    image: 'mysql:5.7.12'
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: lms
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mariadb:/var/lib/mysql
+  rabbitmq:
+    container_name: bekreno-rabbitmq
+    image: 'rabbitmq:3.8.9'

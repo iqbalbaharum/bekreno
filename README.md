@@ -106,7 +106,7 @@ To reduce system complexity, the framework use cloud-based storage.
 
 #### Using Cloud provider (AWS)
 
-1. Go to [file.datasource.ts](), and **change** code for `const config` to below
+1. Go to `src -> datasources -> file.datasource.ts`, and **change** code for `const config` to below
 
 ```js
 const config = {

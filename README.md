@@ -1,4 +1,4 @@
-# Krenovator LMS System (Open Source)
+<!-- # Krenovator LMS System (Open Source)
 
 ### Introduction
 
@@ -142,3 +142,90 @@ const config = {
 4. Run application
 
 [Back to top](#documentation)
+ -->
+
+ To configure LMS Krenovator
+
+## Tools used to configure
+<ol>
+<li>XAMPP</li>
+<li>CODE EDITOR(Sublime Text)</li>
+<li>GIT</li>
+</ol>
+
+## Step to deploy LMS Krenovator
+1. Using Git Bash
+2. git clone fekreno at ```https://github.com/iqbalbaharum/fekreno.git```
+3. git clone bekreno at ```https://github.com/iqbalbaharum/bekreno.git```
+
+4. Create new file ".env" in fekreno folder and bekreno folder.
+
+5. Copy the bekreno and fekreno respective as in [APPENDIX](#appendix).
+
+6. Run XAMPP (I am using XAMPP as a MySQL database server)
+7. Open MySQL Admin, create new database and name it "lms", press "create" button
+
+
+## 8. Open bekreno folder using CMD
+9. enter "npm ci"
+10. enter "npm run build"
+11. enter "npm run migrate"
+12. enter "npm start" 
+
+## 13. Open fekreno folder using CMD
+14. enter "npm ci"
+15. enter "quasar dev"
+
+16. if any, can refer to this [source](https://www.youtube.com/watch?v=x1ul9e8iXa4)
+
+
+## APPENDIX
+```js
+#for bekreno
+
+# OTP
+OTP_ENABLE=0
+SMS_URL=
+SMS_API=
+SMS_TAG=
+OTP_SECRET=
+
+# In milliseconds
+OTP_VALIDITY=18000
+
+# JWT Token
+TOKEN_SECRET=mylocal
+TOKEN_VALIDITY=21600
+
+# MYSQL Database
+MYSQL_HOST=localhost
+MYSQL_DB=lms
+MYSQL_USERNAME=root
+MYSQL_PASSWORD=
+
+#SMTP
+SMTP_HOST=any@email.com
+SMTP_SECURE=true
+SMTP_PORT=465
+SMTP_USERNAME=
+SMTP_PASSWORD=
+
+ONESIGNAL_APPID=
+ONESIGNAL_APPKEY=
+
+BILLPLZ_SECRET=
+
+# STORAGE PROVIDER
+STORAGE_PROVIDER=amazon
+STORAGE_PROVIDER_KEY_ID=
+STORAGE_PROVIDER_KEY=
+STORAGE_CONTAINER=krenolms
+
+```
+ 
+```js
+#for fekreno
+MAIN_BE_URL=http://localhost:3000
+MAIN_BE_TOKEN=jwt
+
+```

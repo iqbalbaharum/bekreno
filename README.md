@@ -26,9 +26,29 @@ Krenovator LMS (backend) is a collaborative learning platform.
 - [SMTP Access](https://developers.google.com/gmail/imap/imap-smtp)
 
 ## Installation
-
-1. `git clone`
-2. `npm ci`
+1. create folder project
+2. right click and click gitbash
+3. the apps will pop out
+4. enter command "git clone'and open github with press fork then copy link
+   #purpose for copy link for clone github and acess
+5. then enter
+6. open visual code
+7. make sure databased on laragon is running
+8. click file open folder project
+9. click read me on documentation
+10. right click bekereno and create new file
+11. file rename .env
+12. open file eny example copy and paste to .env
+13. find in .env file mysql databased
+14. copy MYSQL_DB=krenolms
+15. open laragon create new lmskreno
+16. ctrl+shift for new terminal
+17. insert command :cd bekreno
+18. insert command : npm ci
+19. wait for running until complete
+20. insert command npm run build
+21. insert commadn npm run migrate
+22. done 
 
 [Back to top](#documentation)
 
@@ -140,5 +160,6 @@ const config = {
 ```
 
 4. Run application
+5. complete
 
 [Back to top](#documentation)

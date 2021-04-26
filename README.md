@@ -7,7 +7,7 @@ Krenovator LMS (backend) is a collaborative learning platform.
 ## Documentation
 
 - [System requirements](#system-requirements)
-- [Installation](#installation)
+- [Installation](#installation Steps)
 - [Configuration File](#configuration-file)
   - [Database](#database)
   - [Storage](#file-storage)
@@ -25,10 +25,14 @@ Krenovator LMS (backend) is a collaborative learning platform.
 - [AWS Cloud S3](https://aws.amazon.com/)
 - [SMTP Access](https://developers.google.com/gmail/imap/imap-smtp)
 
-## Installation
+## Installation Steps
 
-1. `git clone`
-2. `npm ci`
+1. Get folder from github 
+  `git clone`
+  - https://github.com/iqbalbaharum/bekreno
+  - https://github.com/iqbalbaharum/fekreno
+2. Install all dependencies 
+  `npm ci`
 
 [Back to top](#documentation)
 
@@ -66,6 +70,7 @@ Krenovator LMS (backend) is a collaborative learning platform.
 
 ## Database
 
+1. Create new database in MySQL
 Database: MySQL
 
 The model is built with SQL-query in mind. To change it, u need to update the datasource.
@@ -90,10 +95,8 @@ https://loopback.io/doc/en/lb4/Database-migrations.html
 
 **Run migration**
 
-```
-npm run build
-npm run migrate
-```
+1. `npm run build`
+2. `npm run migrate`
 
 [Back to top](#documentation)
 
@@ -140,5 +143,6 @@ const config = {
 ```
 
 4. Run application
+  `npm start`
 
 [Back to top](#documentation)

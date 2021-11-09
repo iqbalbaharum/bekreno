@@ -42,3 +42,4 @@ export * from './zone.model';
 
 
 
+export * from './calendar.model';

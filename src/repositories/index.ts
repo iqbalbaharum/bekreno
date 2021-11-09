@@ -37,3 +37,4 @@ export * from './user.repository';
 export * from './zone.repository';
 
 
+export * from './calendar.repository';

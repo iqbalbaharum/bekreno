@@ -1,3 +1,4 @@
+// Starting of the project - main file
 import {ApplicationConfig, BalJsApplication} from './application';
 
 export * from './application';
